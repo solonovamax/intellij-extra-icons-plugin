@@ -1,6 +1,6 @@
 # Extra Icons Change Log
 
-## 2023.3.2-231 (WIP)
+## 2023.3.1-231 (WIP)
 * improve Jenkins support. Thanks **lauragra-y (Laura Gray)** for her contribution!
 
 ## 2023.3-231 (2023/11/05)
