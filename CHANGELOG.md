@@ -1,5 +1,8 @@
 # Extra Icons Change Log
 
+## 2023.3.2-231 (WIP)
+* improve Jenkins support. Thanks **lauragra-y (Laura Gray)** for her contribution!
+
 ## 2023.3-231 (2023/11/05)
 * important code rework [#166](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/166): improve the way Extra Icons plugin triggers icons refresh and IDE's filename index querying. You should see less `Slow operations are prohibited on EDT` and threading related issues like `...should be accessed only from EDT`.
 * fix [#36](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/36): can't override Python icons in PyCharm, Go icons in GoLand, and Tree and List icons in WriterSide.
