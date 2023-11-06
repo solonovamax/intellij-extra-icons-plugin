@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+// TODO migrate to Listener https://plugins.jetbrains.com/docs/intellij/plugin-listeners.html#defining-project-level-listeners
 public class VFSChangesListenersProjectActivity implements ProjectActivity {
 
     private static final Logger LOGGER = Logger.getInstance(VFSChangesListenersProjectActivity.class);

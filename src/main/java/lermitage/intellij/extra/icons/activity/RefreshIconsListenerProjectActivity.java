@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
+// TODO migrate to Listener https://plugins.jetbrains.com/docs/intellij/plugin-listeners.html#defining-project-level-listeners
 public class RefreshIconsListenerProjectActivity implements ProjectActivity {
 
     private static final Logger LOGGER = Logger.getInstance(RefreshIconsListenerProjectActivity.class);
