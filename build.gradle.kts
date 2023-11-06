@@ -64,9 +64,9 @@ repositories {
     mavenCentral()
 }
 
-val junitVersion = "5.10.0"
-val junitPlatformLauncher = "1.10.0"
-val archunitVersion = "1.1.0"
+val junitVersion = "5.10.1"
+val junitPlatformLauncher = "1.10.1"
+val archunitVersion = "1.2.0"
 
 dependencies {
     // needed because may not be bundled in Gateway's client
