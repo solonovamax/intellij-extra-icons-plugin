@@ -15,6 +15,9 @@ Download a JSON Icon Pack (see Themes below), then go to Extra Icons settings, a
 - changelog:
     - v1 - 2023/11/09: initial version
 
+Screenshot:  
+![FilesOldUITheme Screenshot](media/AIAssistantTheme.png)
+
 ---
 
 ### JPABuddyOldUITheme
@@ -24,6 +27,9 @@ Download a JSON Icon Pack (see Themes below), then go to Extra Icons settings, a
 - description: replaces JPA Explorer and JPA Designer gray icons by new and colorful icons
 - changelog:
   - v1 - 2023/11/09: initial version
+
+Screenshot:  
+![FilesOldUITheme Screenshot](media/JPABuddyOldUITheme.png)
 
 ---
 
