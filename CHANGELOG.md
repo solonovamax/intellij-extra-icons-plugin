@@ -3,7 +3,8 @@
 ## 2023.3.1-231 (WIP)
 * improve Jenkins support. Thanks **lauragra-y (Laura Gray)** for her contribution!
 * add new UI icon variants for Tox folders, Python `.egg-info` folders, Python PyTest cache folders and Python Virtual Environment folders.
-* Extra Icons can now override JPA Buddy icons in recent IDEs. A new colorful icon theme is available online if you don't like JPA Buddy toolwindows gray icons. See [JPABuddyOldUITheme](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/themes/THEMES.md#jpabuddyolduitheme).
+* Extra Icons can now override *JPA Buddy* icons in recent IDEs. A new colorful icon theme is available online if you don't like JPA Buddy toolwindows gray icons. See [JPABuddyOldUITheme](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/themes/THEMES.md#jpabuddyolduitheme).
+* Extra Icons can now override *Extra ToolWindow Colorful Icons* icons.
 * Also added an icon theme for AI Assistant toolwindows icon. See [AIAssistantTheme](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/themes/THEMES.md#aiassistanttheme).
 
 ## 2023.3-231 (2023/11/05)
