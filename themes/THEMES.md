@@ -36,10 +36,11 @@ Screenshot:
 ### FilesOldUITheme
 
 - download link: [FilesOldUITheme.json](https://raw.githubusercontent.com/jonathanlermitage/intellij-extra-icons-plugin/master/themes/FilesOldUITheme.json)
-- nb of icons: <!--FilesOldUITheme_nbOfIcons_start-->81<!--FilesOldUITheme_nbOfIcons_end-->
+- nb of icons: <!--FilesOldUITheme_nbOfIcons_start-->82<!--FilesOldUITheme_nbOfIcons_end-->
 - designed for: the new UI, light theme
 - description: replaces some new UI icons (files and folders) by old UI icons, like Class and Interface files, Package and Source Root folders... Based on IJ Community icons
 - changelog:
+  - v8 - 2023/11/17: 1 new icon (/fileTypes/microsoftWindows.svg)
   - v7 - 2023/08/07: 1 new icon (/fileTypes/uiForm.svg)
   - v6 - 2023/06/14: 1 new icon (/fileTypes/regexp.svg)
   - v5 - 2023/05/09: 8 new icons
