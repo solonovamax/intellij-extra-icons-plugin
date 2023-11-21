@@ -1,5 +1,8 @@
 # Extra Icons Change Log
 
+## 2023.4.2 (WIP)
+* implement [IDEA-336801](https://youtrack.jetbrains.com/issue/IDEA-336801) workaround: IDE's icon cache prevented some icons override on refresh (per example, after you enabled or disabled a custom icon). 
+
 ## 2023.4.1 (2023/11/20)
 * improve Jenkins support. Thanks **lauragra-y (Laura Gray)** for her contribution!
 * add new UI icon variants for Tox folders, Python `.egg-info` folders, Python PyTest cache folders and Python Virtual Environment folders.
