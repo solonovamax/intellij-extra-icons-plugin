@@ -117,6 +117,11 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
     private JButton detectAdditionalUIScaleButton;
     private JLabel resetHintsTitle;
     private JButton resetHintsButton;
+    private JButton buttonKnownIssue1;
+    private JButton buttonKnownIssue2;
+    private JLabel labelKnownIssue1;
+    private JLabel labelKnownIssue2;
+    private JLabel labelKnownIssueTitle;
 
     private PluginIconsSettingsTableModel pluginIconsSettingsTableModel;
     private UserIconsSettingsTableModel userIconsSettingsTableModel;
@@ -522,6 +527,7 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
 
         mainTabbedPane.setTitleAt(0, "  " + i18n.getString("main.pane.main.config.title") + "  ");
         mainTabbedPane.setTitleAt(1, "  " + i18n.getString("main.pane.advanced.config.title") + "  ");
+        mainTabbedPane.setTitleAt(2, "  " + i18n.getString("main.pane.known.issues.title") + "  ");
 
         iconsTabbedPane.setTitleAt(0, "  " + i18n.getString("plugin.icons.table.tab.name") + "  ");
         iconsTabbedPane.setTitleAt(1, "  " + i18n.getString("user.icons.table.tab.name") + "  ");
@@ -531,6 +537,19 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
         useIDEFilenameIndexCheckbox.setSelected(SettingsIDEService.getInstance().getUseIDEFilenameIndex2());
         useIDEFilenameIndexCheckbox.setText(i18n.getString("checkbox.use.ide.filename.index.label"));
         useIDEFilenameIndexTip.setText(i18n.getString("checkbox.use.ide.filename.index.tip"));
+
+        labelKnownIssueTitle.setText(i18n.getString("known.issues.title"));
+
+        labelKnownIssue1.setText(i18n.getString("known.issue.label1"));
+        labelKnownIssue2.setText(i18n.getString("known.issue.label2"));
+        buttonKnownIssue1.setText(i18n.getString("known.issue.btn1"));
+        buttonKnownIssue2.setText(i18n.getString("known.issue.btn2"));
+        buttonKnownIssue1.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
+        buttonKnownIssue2.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
+        buttonKnownIssue1.addActionListener(al ->
+            BrowserUtil.browse("https://youtrack.jetbrains.com/issue/IDEA-247819/How-to-customize-folder-icons-in-Packages-view"));
+        buttonKnownIssue2.addActionListener(al ->
+            BrowserUtil.browse("https://youtrack.jetbrains.com/issue/RIDER-101621/Plugin-SDK-Rider-cant-override-folder-icons"));
 
         initCheckbox();
     }
