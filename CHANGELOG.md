@@ -2,7 +2,7 @@
 
 ## 2023.4.2 (WIP)
 * implement [IDEA-336801](https://youtrack.jetbrains.com/issue/IDEA-336801) workaround: IDE's icon cache prevented some icons override on refresh (per example, after you enabled or disabled a custom icon).
-* settings panel: inform user about some JetBrains issues affecting this plugin.
+* settings panel: inform user about some IntelliJ issues affecting this plugin.
 
 ## 2023.4.1 (2023/11/20)
 * improve Jenkins support. Thanks **lauragra-y (Laura Gray)** for her contribution!
