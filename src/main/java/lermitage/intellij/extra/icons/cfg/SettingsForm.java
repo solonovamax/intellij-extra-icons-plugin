@@ -525,12 +525,12 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
         buttonUninstallIconPack.setText(i18n.getString("btn.uninstall.icon.pack"));
         buttonUninstallIconPack.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/remove.svg", SettingsForm.class)); //NON-NLS
 
-        mainTabbedPane.setTitleAt(0, "  " + i18n.getString("main.pane.main.config.title") + "  ");
-        mainTabbedPane.setTitleAt(1, "  " + i18n.getString("main.pane.advanced.config.title") + "  ");
-        mainTabbedPane.setTitleAt(2, "  " + i18n.getString("main.pane.known.issues.title") + "  ");
+        mainTabbedPane.setTitleAt(0, " " + i18n.getString("main.pane.main.config.title") + " ");
+        mainTabbedPane.setTitleAt(1, " " + i18n.getString("main.pane.advanced.config.title") + " ");
+        mainTabbedPane.setTitleAt(2, " " + i18n.getString("main.pane.known.issues.title") + " ");
 
-        iconsTabbedPane.setTitleAt(0, "  " + i18n.getString("plugin.icons.table.tab.name") + "  ");
-        iconsTabbedPane.setTitleAt(1, "  " + i18n.getString("user.icons.table.tab.name") + "  ");
+        iconsTabbedPane.setTitleAt(0, " " + i18n.getString("plugin.icons.table.tab.name") + " ");
+        iconsTabbedPane.setTitleAt(1, " " + i18n.getString("user.icons.table.tab.name") + " ");
 
         experimentalPanel.setBorder(IdeBorderFactory.createTitledBorder(i18n.getString("experimental.panel.title")));
 
