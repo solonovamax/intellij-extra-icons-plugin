@@ -547,9 +547,9 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
         buttonKnownIssue1.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
         buttonKnownIssue2.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
         buttonKnownIssue1.addActionListener(al ->
-            BrowserUtil.browse("https://youtrack.jetbrains.com/issue/IDEA-247819/How-to-customize-folder-icons-in-Packages-view"));
+            BrowserUtil.browse("https://youtrack.jetbrains.com/issue/IDEA-247819"));
         buttonKnownIssue2.addActionListener(al ->
-            BrowserUtil.browse("https://youtrack.jetbrains.com/issue/RIDER-101621/Plugin-SDK-Rider-cant-override-folder-icons"));
+            BrowserUtil.browse("https://youtrack.jetbrains.com/issue/RIDER-101621"));
 
         initCheckbox();
     }
