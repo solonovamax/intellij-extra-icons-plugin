@@ -122,6 +122,8 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
     private JLabel labelKnownIssue1;
     private JLabel labelKnownIssue2;
     private JLabel labelKnownIssueTitle;
+    private JLabel labelKnownIssue3;
+    private JButton buttonKnownIssue3;
 
     private PluginIconsSettingsTableModel pluginIconsSettingsTableModel;
     private UserIconsSettingsTableModel userIconsSettingsTableModel;
@@ -542,13 +544,18 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
 
         labelKnownIssue1.setText(i18n.getString("known.issue.label1"));
         labelKnownIssue2.setText(i18n.getString("known.issue.label2"));
+        labelKnownIssue3.setText(i18n.getString("known.issue.label3"));
         buttonKnownIssue1.setText(i18n.getString("known.issue.btn1"));
         buttonKnownIssue2.setText(i18n.getString("known.issue.btn2"));
+        buttonKnownIssue3.setText(i18n.getString("known.issue.btn3"));
         buttonKnownIssue1.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
         buttonKnownIssue2.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
+        buttonKnownIssue3.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
         buttonKnownIssue1.addActionListener(al ->
             BrowserUtil.browse("https://youtrack.jetbrains.com/issue/IDEA-247819"));
         buttonKnownIssue2.addActionListener(al ->
+            BrowserUtil.browse("https://youtrack.jetbrains.com/issue/IDEA-339254"));
+        buttonKnownIssue3.addActionListener(al ->
             BrowserUtil.browse("https://youtrack.jetbrains.com/issue/RIDER-101621"));
 
         initCheckbox();
