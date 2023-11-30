@@ -72,7 +72,7 @@ dependencies {
     // needed because may not be bundled in Gateway's client
     implementation("org.apache.commons:commons-collections4:4.4")
     implementation("commons-codec:commons-codec:1.16.0")
-    implementation("commons-io:commons-io:2.15.0")
+    implementation("commons-io:commons-io:2.15.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
