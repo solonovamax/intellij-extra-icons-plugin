@@ -723,6 +723,8 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                     .eq("gruntfile.js"),
                 ofFile("git", "extra-icons/git.svg", "Git: .gitattributes, .gitignore, .gitmodules, .gitreview")
                     .eq(".gitattributes", ".gitignore", ".gitmodules", ".gitreview"),
+                ofFile("gitblameignorerevs", "extra-icons/git.svg", "Git: .git-blame-ignore-revs")
+                    .eq(".git-blame-ignore-revs"),
                 ofFile("gitlab", "extra-icons/gitlab.svg", "Gitlab: .gitlab-ci.yml")
                     .eq(".gitlab-ci.yml")
                     .altIcons("extra-icons/gitlab_alt.svg"),
