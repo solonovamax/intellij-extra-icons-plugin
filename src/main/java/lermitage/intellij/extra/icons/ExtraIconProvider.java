@@ -57,13 +57,22 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                     "IDE icon: Java enum")
                     .altIcons("extra-icons/ide/enum_alt.svg", "extra-icons/ide/enum_alt2.svg")
                     .autoLoadNewUIIconVariant(),
+                // FIXME temporary workaround for IDEA-339254 (can't refresh Exception and Abstract Exception file IDE icons)
+                ofFile("ide_java_abstract_exception_workaround_IDEA339254",
+                    "extra-icons/ide/abstractException_.svg", "Java abstract exception class (regex): '.*/[a-z\\d._\\-]*abstract[a-z\\d._\\-]*exception\\.java' (partial workaround for IDEA-339254)")
+                    .regex(".*/[a-z\\d._\\-]*abstract[a-z\\d._\\-]*exception+\\.java")
+                    .autoLoadNewUIIconVariant(),
+                ofFile("ide_java_exception_workaround_IDEA339254",
+                    "extra-icons/ide/exceptionClass_.svg", "Java exception class (regex): '.*/[a-z\\d._\\-]*exception\\.java' (partial workaround for IDEA-339254)")
+                    .regex(".*/[a-z\\d._\\-]*exception\\.java")
+                    .autoLoadNewUIIconVariant(),
                 ofIcon("ide_java_abstract_exception",
                     "abstractException.svg", "extra-icons/ide/abstractException_.svg",
-                    "IDE icon: Java abstract exception class")
+                    "IDE icon: Java abstract exception class (affected by IDEA-339254)")
                     .autoLoadNewUIIconVariant(),
                 ofIcon("ide_java_exception_class",
                     "exceptionClass.svg", "extra-icons/ide/exceptionClass_.svg",
-                    "IDE icon: Java exception class")
+                    "IDE icon: Java exception class (affected by IDEA-339254)")
                     .autoLoadNewUIIconVariant(),
                 // kotlin
                 ofIcon("ide_kotlin_enum_class",

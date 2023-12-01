@@ -2,6 +2,7 @@
 
 ## 2023.4.2 (WIP)
 * implement [IDEA-336801](https://youtrack.jetbrains.com/issue/IDEA-336801) workaround: IDE's icon cache prevented some icons override on refresh (per example, after you enabled or disabled a custom icon).
+* implement a temporary and partial workaround for [IDEA-339254](https://youtrack.jetbrains.com/issue/IDEA-339254): can't refresh Java Exception and Java Abstract Exception IDE icons.
 * settings panel: inform user about some IntelliJ issues affecting this plugin.
 * support `.git-blame-ignore-revs` files.
 
