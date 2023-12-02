@@ -5,6 +5,7 @@
 * implement a temporary and partial workaround for [IDEA-339254](https://youtrack.jetbrains.com/issue/IDEA-339254): can't refresh Java Exception and Java Abstract Exception IDE icons.
 * settings panel: inform user about some IntelliJ issues affecting this plugin.
 * support `.git-blame-ignore-revs` files.
+* add Angular 17 "renaissance" alternative icon for `angular.json` files.
 
 ## 2023.4.1 (2023/11/20)
 * improve Jenkins support. Thanks **lauragra-y (Laura Gray)** for her contribution!

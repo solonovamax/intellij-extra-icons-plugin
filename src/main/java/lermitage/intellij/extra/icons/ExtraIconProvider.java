@@ -337,6 +337,7 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                 //<editor-fold desc="angular">
                 ofFile("angular_json", "extra-icons/angular2.svg", "Angular: angular.json")
                     .eq("angular.json")
+                    .altIcons("extra-icons/angular_renaissance.svg")
                     .tags(ModelTag.ANGULAR2),
                 ofFile("angular_component_generic", "extra-icons/angular-component.svg", "Angular (if angular.json exists): *.component.(js|ts)")
                     .regex(".*[^a-zA-Z\\d]component\\.(js|ts)")
