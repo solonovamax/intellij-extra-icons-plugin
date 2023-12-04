@@ -151,9 +151,12 @@ tasks {
         // Rename generated plugin file to mention the fact that no paid license is needed
         doLast {
             val baseName = "build/distributions/Extra Icons-$version"
-            val noLicFile = projectDir.resolve("${baseName}-no-license.zip")
-            noLicFile.delete()
-            FileUtils.moveFile(projectDir.resolve("${baseName}.zip"), noLicFile)
+            val noLicPluginFile = projectDir.resolve("${baseName}-no-license.zip")
+            val originalPluginFile = projectDir.resolve("${baseName}.zip")
+            noLicPluginFile.delete()
+            if (originalPluginFile.exists()) {
+                FileUtils.moveFile(projectDir.resolve("${baseName}.zip"), noLicPluginFile)
+            }
         }
     }
     register("clearSandboxedIDESystemLogs") {
