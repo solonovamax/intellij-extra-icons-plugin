@@ -22,4 +22,4 @@ jobs:
           gradle-home-cache-cleanup: true
 
       - name: Build and verify
-        run: ./gradlew clean buildPlugin test verifyPlugin verifypluginconfiguration -PpluginVerifyProductDescriptor=true -PpluginIdeaVersion=${{ matrix.ij }} --warning-mode all
+        run: ./gradlew clean buildPlugin test modernizer biz-lermitage-oga-gradle-check verifyPlugin showGeneratedPlugin -PpluginLicenseType=subscription -PpluginIdeaVersion=${{ matrix.ij }} --warning-mode all

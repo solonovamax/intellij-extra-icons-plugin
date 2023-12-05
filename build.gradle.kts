@@ -34,9 +34,8 @@ val pluginXmlFile = projectDir.resolve("src/main/resources/META-INF/plugin.xml")
 val pluginDownloadIdeaSources: String by project
 val pluginVersion: String by project
 val pluginJavaVersion: String by project
-val pluginVerifyProductDescriptor: String by project
 val testLoggerStyle: String by project
-val pluginNeedsLicense: String by project
+val pluginLicenseType: String by project
 val pluginLanguage: String by project
 val pluginCountry: String by project
 val pluginEnableDebugLogs: String by project
@@ -124,6 +123,7 @@ tasks {
             }
         }
     }
+
     register("removeLicenseRestrictionFromPluginXml") {
         // Remove paid license requirement
         doLast {
@@ -157,6 +157,47 @@ tasks {
             if (originalPluginFile.exists()) {
                 FileUtils.moveFile(projectDir.resolve("${baseName}.zip"), noLicPluginFile)
             }
+        }
+    }
+
+    register("renamePluginCoordinatesToLifetimeInPluginXml") {
+        doLast {
+            var pluginXmlStr = pluginXmlFile.readText()
+            pluginXmlStr = pluginXmlStr.replace("<id>lermitage.intellij.extra.icons</id>", "<id>lermitage.extra.icons.lifetime</id>")
+            pluginXmlStr = pluginXmlStr.replace("<name>Extra Icons</name>", "<name>Extra Icons Lifetime</name>")
+            pluginXmlStr = pluginXmlStr.replace("<product-descriptor code=\"PEXTRAICONS\"", "<product-descriptor code=\"PEXTRAICONSLIFE\"")
+            FileUtils.delete(pluginXmlFile)
+            FileUtils.write(pluginXmlFile, pluginXmlStr, "UTF-8")
+        }
+    }
+    register("restorePluginCoordinatesFromLifetimeInPluginXml") {
+        doLast {
+            var pluginXmlStr = pluginXmlFile.readText()
+            pluginXmlStr = pluginXmlStr.replace("<id>lermitage.extra.icons.lifetime</id>", "<id>lermitage.intellij.extra.icons</id>")
+            pluginXmlStr = pluginXmlStr.replace("<name>Extra Icons Lifetime</name>", "<name>Extra Icons</name>")
+            pluginXmlStr = pluginXmlStr.replace("<product-descriptor code=\"PEXTRAICONSLIFE\"", "<product-descriptor code=\"PEXTRAICONS\"")
+            FileUtils.delete(pluginXmlFile)
+            FileUtils.write(pluginXmlFile, pluginXmlStr, "UTF-8")
+        }
+    }
+    register("renameDistributionLifetimeLicense") {
+        doLast {
+            val baseName = "build/distributions/Extra Icons-$version"
+            val noLicPluginFile = projectDir.resolve("${baseName}-lifetime.zip")
+            val originalPluginFile = projectDir.resolve("${baseName}.zip")
+            noLicPluginFile.delete()
+            if (originalPluginFile.exists()) {
+                FileUtils.moveFile(projectDir.resolve("${baseName}.zip"), noLicPluginFile)
+            }
+        }
+    }
+
+    register("showGeneratedPlugin") {
+        doLast {
+            logger.quiet("--------------------------------------------------\n" +
+                "Generated: " + projectDir.resolve("build/distributions/").list().contentToString()
+                .replace("[", "").replace("]", " ").trim()
+                + "\n--------------------------------------------------")
         }
     }
     register("clearSandboxedIDESystemLogs") {
@@ -238,10 +279,16 @@ tasks {
         enabled = false
     }
     patchPluginXml {
-        if (!pluginNeedsLicense.toBoolean()) {
-            dependsOn("removeLicenseRestrictionFromPluginXml")
-        } else {
-            if (pluginVerifyProductDescriptor.toBoolean()) {
+        when (pluginLicenseType) {
+            "free" -> {
+                dependsOn("removeLicenseRestrictionFromPluginXml")
+            }
+
+            "lifetime" -> {
+                dependsOn("renamePluginCoordinatesToLifetimeInPluginXml", "verifyProductDescriptor")
+            }
+
+            else -> {
                 dependsOn("verifyProductDescriptor")
             }
         }
@@ -252,8 +299,14 @@ tasks {
         })
     }
     buildPlugin {
-        if (!pluginNeedsLicense.toBoolean()) {
-            finalizedBy("restoreLicenseRestrictionFromPluginXml", "renameDistributionNoLicense")
+        when (pluginLicenseType) {
+            "free" -> {
+                finalizedBy("restoreLicenseRestrictionFromPluginXml", "renameDistributionNoLicense")
+            }
+
+            "lifetime" -> {
+                finalizedBy("restorePluginCoordinatesFromLifetimeInPluginXml", "renameDistributionLifetimeLicense")
+            }
         }
     }
     publishPlugin {

@@ -1,5 +1,8 @@
 # Extra Icons Change Log
 
+## 2023.4.3 (WIP)
+* build script: prepare the work for the introduction of [lifetime licenses](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license).
+
 ## 2023.4.2 (2023/12/03)
 * **INFO**: JetBrains will introduce a new business model for paid/freemium plugins. This model will offer a perpetual license, **allowing users to make a one-time payment for the plugin and use it for a lifetime**. [Get more information here](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license).
 * implement [IDEA-336801](https://youtrack.jetbrains.com/issue/IDEA-336801) workaround: IDE's icon cache prevented some icons override on refresh (per example, after you enabled or disabled a custom icon).

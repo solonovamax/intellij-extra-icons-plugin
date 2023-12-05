@@ -39,32 +39,37 @@ fixgit: intro ## fix executable permission flag on git index for required files
 
 .PHONY: run
 run: intro ## run plugin in latest stable IntelliJ Community
-	${gradlew_cmd} buildPlugin runIde -PpluginNeedsLicense=false
+	${gradlew_cmd} buildPlugin runIde -PpluginDownloadIdeaSources=false -PpluginLicenseType=free
 
 
 .PHONY: runCN
 runCN: intro ## run plugin in latest stable IntelliJ Community with Extra Icons' Chinese UI
-	${gradlew_cmd} buildPlugin runIde --warning-mode all -Dextra-icons.enable.chinese.ui=true -PpluginNeedsLicense=false
+	${gradlew_cmd} buildPlugin runIde -PpluginDownloadIdeaSources=false -PpluginLicenseType=free -Dextra-icons.enable.chinese.ui=true
 
 
 .PHONY: runeap
 runeap: intro ## run plugin in latest IntelliJ Community EAP Snapshot
-	${gradlew_cmd} buildPlugin runIde --warning-mode all -PpluginIdeaVersion=IC-LATEST-EAP-SNAPSHOT -PpluginDownloadIdeaSources=false -PpluginNeedsLicense=false
+	${gradlew_cmd} buildPlugin runIde -PpluginDownloadIdeaSources=false -PpluginLicenseType=free -PpluginIdeaVersion=IC-LATEST-EAP-SNAPSHOT
 
 
 .PHONY: runold
 runold: intro ## run plugin in oldest supported IntelliJ Community version
-	${gradlew_cmd} buildPlugin runIde --warning-mode all -PpluginIdeaVersion=IC-${ij_min_version} -PpluginDownloadIdeaSources=false -PpluginNeedsLicense=false
+	${gradlew_cmd} buildPlugin runIde -PpluginDownloadIdeaSources=false -PpluginLicenseType=free -PpluginIdeaVersion=IC-${ij_min_version}
 
 
 .PHONY: build
-build: intro ## build and package a plugin to build/distribution/ (see generated ZIP file)
-	${gradlew_cmd} clean buildPlugin test modernizer biz-lermitage-oga-gradle-check verifyPlugin --warning-mode all -PpluginVerifyProductDescriptor=true
+build: intro ## build and package a plugin which asks for a paid subscription license to build/distribution/ (see generated ZIP file)
+	${gradlew_cmd} clean buildPlugin test modernizer biz-lermitage-oga-gradle-check verifyPlugin showGeneratedPlugin --warning-mode all -PpluginLicenseType=subscription
 
 
 .PHONY: buildfree
 buildfree: intro ## build and package a plugin which doesn't ask for a paid license to build/distribution/ (see generated ZIP file)
-	${gradlew_cmd} clean buildPlugin test modernizer biz-lermitage-oga-gradle-check verifyPlugin --warning-mode all -PpluginNeedsLicense=false
+	${gradlew_cmd} clean buildPlugin test modernizer biz-lermitage-oga-gradle-check verifyPlugin showGeneratedPlugin --warning-mode all -PpluginLicenseType=free
+
+
+.PHONY: buildlifetime
+buildlifetime: intro ## build and package a plugin which asks for a paid lifetime license to build/distribution/ (see generated ZIP file)
+	${gradlew_cmd} clean buildPlugin test modernizer biz-lermitage-oga-gradle-check verifyPlugin showGeneratedPlugin --warning-mode all -PpluginLicenseType=lifetime
 
 
 .PHONY: lint
@@ -109,7 +114,7 @@ dt: intro ## show dependencies graph
 
 .PHONY: publish
 publish: intro ## publish package to the JetBrains marketplace
-	${gradlew_cmd} clean buildPlugin test verifyPlugin publishPlugin --warning-mode all -PpluginVerifyProductDescriptor=true
+	${gradlew_cmd} clean buildPlugin test verifyPlugin publishPlugin --warning-mode all
 
 
 .PHONY: help
