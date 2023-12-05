@@ -4,7 +4,8 @@
 
 2023/11/30: JetBrains will introduce a new business model for paid/freemium plugins. This model will offer a perpetual license, **allowing users to make a one-time payment for the plugin and use it for a lifetime** (which is different from the traditional *perpetual* license offered after 12 months of uninterrupted subscription).  
 I will publish a **separate version** of Extra Icons with lifetime licenses, simply because the marketplace can't maintain two license types simultaneously for the same plugin. I will give more information asap, like the price of this lifetime license, and the name of this special version of Extra Icons plugin. This will be the exact same plugin (same codebase, simply a build with a different plugin name) with the same icons, the same functionalities, the same release dates and support, and the same GitHub repository, but with a lifetime license instead of a yearly/monthly subscription.    
-Extra Icons plugin will show a notification in your IDE when the lifetime license becomes available for purchase.
+Extra Icons plugin will show a notification in your IDE when the lifetime license becomes available for purchase.  
+Please note this separate plugin will use the same configuration files as the regular Extra Icons plugin, which means you won't lose your preferences and user icons.
 
 ## How to get a perpetual license?
 
