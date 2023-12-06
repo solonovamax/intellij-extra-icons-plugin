@@ -11,20 +11,15 @@ Download a JSON Icon Pack (see Themes below), then go to Extra Icons settings, a
 
 - description: replaces the AI Assistant Star icon by the new coloured Spiral icon
 
-2023/11/28: integrated into [Extra ToolWindow Colorful Icons plugin](https://plugins.jetbrains.com/plugin/16604-extra-toolwindow-colorful-icons/).
+2023/11/28: moved to [Extra ToolWindow Colorful Icons plugin](https://plugins.jetbrains.com/plugin/16604-extra-toolwindow-colorful-icons/).
 
 ---
 
 ### JPABuddyOldUITheme
 
-- download link: [JPABuddyOldUITheme.json](https://raw.githubusercontent.com/jonathanlermitage/intellij-extra-icons-plugin/master/themes/JPABuddyOldUITheme.json)
-- designed for: the old UI, light theme
-- description: replaces JPA Explorer and JPA Designer gray icons by new and colorful icons
-- changelog:
-  - v1 - 2023/11/09: initial version
+- description: replaces JPA Explorer and JPA Designer gray icons by different and colorful icons
 
-Screenshot:  
-![FilesOldUITheme Screenshot](media/JPABuddyOldUITheme.png)
+2023/12/06: moved to [Extra ToolWindow Colorful Icons plugin](https://plugins.jetbrains.com/plugin/16604-extra-toolwindow-colorful-icons/).
 
 ---
 
