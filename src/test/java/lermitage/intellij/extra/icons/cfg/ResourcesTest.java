@@ -123,7 +123,7 @@ public class ResourcesTest {
     }
 
     @Test
-    public void svg_icons_should_be_16x16() {
+    public void svg_icons_should_be_16x16() { // IMPORTANT toolwindow icons should be 13x13 (mandatory since IJ 2023.3)
         List<String> errors = new ArrayList<>();
 
         svgIcons.forEach(file -> {
