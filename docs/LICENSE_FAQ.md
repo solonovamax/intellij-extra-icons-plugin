@@ -7,6 +7,12 @@ I will publish a **separate version** of Extra Icons with lifetime licenses, sim
 Extra Icons plugin will show a notification in your IDE when the lifetime license becomes available for purchase.  
 Please note this separate plugin will use the same configuration files as the regular Extra Icons plugin, which means you won't lose your preferences and user icons.
 
+(Chinese version - translated by [DeepL](https://www.deepl.com/translator))      
+2023/11/30: JetBrains 将为付费/免费插件引入新的商业模式. 这种模式将提供永久许可证，**允许用户一次性支付插件费用并终身使用**（这与传统的不间断订购 12 个月后提供的*永久*许可证不同）.  
+我将发布一个**单独版本**的 Extra Icons，并提供终身许可证，原因很简单，因为市场无法同时为同一个插件提供两种许可证类型. 我将尽快提供更多信息，如终身许可证的价格以及 Extra Icons 插件特殊版本的名称. 这将是一个完全相同的插件（代码库相同，只是构建时使用了不同的插件名称），具有相同的图标、相同的功能、相同的发布日期和支持，以及相同的 GitHub 存储库，但使用的是终身许可，而不是按年/月订阅.  
+当您可以购买终身许可证时，Extra Icons 插件会在您的集成开发环境中显示通知.  
+请注意，此独立插件将使用与常规 Extra Icons 插件相同的配置文件，这意味着您不会丢失首选项和用户图标.
+
 ## How to get a perpetual license?
 
 As explained on the JetBrains marketplace, 12 months of uninterrupted subscription payments qualify you for receiving a [perpetual fallback license](https://sales.jetbrains.com/hc/en-gb/articles/207240845-What-is-perpetual-fallback-license).
@@ -20,7 +26,7 @@ Also, if you contributed to Extra Icons, please email me, or send a private mess
 ## I am an OSS developer, can I get a license for free?
 
 I'm sorry, but I noticed that many OSS accounts were totally fake. I mean, many people simply create (or duplicate) a project with a few lines of codes, then they ask for an OSS free license.  
-As of 2022-11-14, I no longer offer licenses for OSS developers. Instead, I donate to some open source projects (~1000 USD this year).
+As of 2022-11-14, I no longer offer licenses for OSS developers. Instead, I donate to some open source projects (~1000 USD in 2022).
 
 ## I received a coupon for a free license, how does it work?
 
