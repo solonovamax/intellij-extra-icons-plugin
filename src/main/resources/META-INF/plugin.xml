@@ -8,6 +8,7 @@
     <product-descriptor code="PEXTRAICONS" release-date="20231105" release-version="20233"/>
 
     <description><![CDATA[
+      <!--//LIFETIMELIC_START//Same plugin as Extra Icons, with a <b>lifetime license</b>.//LIFETIMELIC_END//-->
       <ul>
         <li>Adds <b>500+ icons</b> for files like Travis YML, GitLab YML, Angular files, etc. Many icons have <b>variants</b>, so if you are not happy with the default icon, you can choose another.</li>
         <li>Shows an icon for <b>Git sub-module folders</b>.</li>
