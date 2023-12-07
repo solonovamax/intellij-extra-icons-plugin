@@ -2,13 +2,23 @@
 
 package lermitage.intellij.extra.icons.cfg;
 
+import com.github.weisj.jsvg.SVGDocument;
+import com.github.weisj.jsvg.geometry.size.FloatSize;
+import com.github.weisj.jsvg.parser.AsynchronousResourceLoader;
+import com.github.weisj.jsvg.parser.SVGLoader;
+import com.github.weisj.jsvg.parser.StaxSVGLoader;
+import com.github.weisj.jsvg.util.ResourceUtil;
+import com.intellij.openapi.diagnostic.LogLevel;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.util.ui.ImageUtil;
 import lermitage.intellij.extra.icons.ExtraIconProvider;
-import lermitage.intellij.extra.icons.IconType;
-import lermitage.intellij.extra.icons.utils.IconUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +43,11 @@ public class ResourcesTest {
 
     @BeforeAll
     static void setUp() {
+        Logger.getFactory().getLoggerInstance(AsynchronousResourceLoader.class.getName()).setLevel(LogLevel.OFF);
+        Logger.getFactory().getLoggerInstance(ResourceUtil.class.getName()).setLevel(LogLevel.OFF);
+        Logger.getFactory().getLoggerInstance(StaxSVGLoader.class.getName()).setLevel(LogLevel.OFF);
+        Logger.getFactory().getLoggerInstance(SVGLoader.class.getName()).setLevel(LogLevel.OFF);
+
         icons = new ArrayList<>();
         List<File> iconsFolders = Arrays.asList(
             new File("src/main/resources/extra-icons/"),
@@ -169,8 +184,9 @@ public class ResourcesTest {
     /**
      * SVG icons loaded by "IconLoader.getIcon" are loaded with IDE's bundled JSVG, so
      * we want to check if everything goes well (even if IDE adds some magic... ^_^).
+     * TODO create an integration test in order to load SVG files with bundled JSVG (JetBrains fork).
+     *   For now, we have a basic unit test using JSVG from weisJ.
      */
-    @Disabled("SVG loading is now handled by IDE - Should run IDE integration tests")
     @Test
     public void svg_icons_should_load_with_jsvg() {
         List<String> errors = new ArrayList<>();
@@ -178,9 +194,22 @@ public class ResourcesTest {
         svgIcons.forEach(file -> {
             try {
                 byte[] fileContent = Files.readAllBytes(file.toPath());
-                IconUtils.ImageWrapper imageWrapper = IconUtils.loadImage(fileContent, IconType.SVG, 1f);
+                /*IconUtils.ImageWrapper imageWrapper = IconUtils.loadImage(fileContent, IconType.SVG, 1.25f);
                 if (imageWrapper == null) {
                     errors.add(file.getName() + ": can't be rendered by JSVG");
+                }*/
+                SVGDocument svgDocument = new SVGLoader().load(new ByteArrayInputStream(fileContent));
+                if (svgDocument == null) {
+                    errors.add(file.getName() + ": can't be loaded by JSVG. Loaded SVGDocument is null");
+                } else {
+                    FloatSize size = svgDocument.size();
+                    BufferedImage image = ImageUtil.createImage((int) size.width, (int) size.height, BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D graphics = image.createGraphics();
+                    svgDocument.render(null, graphics);
+                    Image thumbnail = ImageUtil.scaleImage(image, 1.25f);
+                    if (thumbnail == null) {
+                        errors.add(file.getName() + ": can't be loaded by JSVG. Generated thumbnail is null");
+                    }
                 }
             } catch (IOException e) {
                 errors.add(file.getName() + ": can't be loaded by JSVG. I/O error is: " + e.getMessage());

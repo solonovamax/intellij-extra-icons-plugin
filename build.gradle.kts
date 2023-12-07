@@ -77,6 +77,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitPlatformLauncher")
     testImplementation("com.tngtech.archunit:archunit:$archunitVersion")
+    testImplementation("com.github.weisj:jsvg:1.3.0")
 }
 
 intellij {
