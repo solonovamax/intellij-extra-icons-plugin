@@ -249,6 +249,7 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
             SettingsIDEService settingsIDEService = SettingsIDEService.getInstance();
             settingsIDEService.setIconviewerShouldRenderSVGHintNotifDisplayed(false);
             settingsIDEService.setPluginIsConfigurableHintNotifDisplayed(false);
+            settingsIDEService.setLifetimeLicIntroHintNotifDisplayed(false);
             resetHintsButton.setEnabled(false);
             Messages.showInfoMessage(
                 i18n.getString("reset.hints.success.subtitle"),

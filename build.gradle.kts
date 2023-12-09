@@ -260,7 +260,12 @@ tasks {
             jvmArgs("-Duser.country=$pluginCountry")
         }
         if (System.getProperty("extra-icons.enable.chinese.ui", "false") == "true") {
+            // force Chinese UI in plugin
             jvmArgs("-Dextra-icons.enable.chinese.ui=true")
+        }
+        if (System.getProperty("extra-icons.always.show.notifications", "false") == "true") {
+            // show notifications on startup
+            jvmArgs("-Dextra-icons.always.show.notifications=true")
         }
 
         // force detection of slow operations in EDT when playing with sandboxed IDE (SlowOperations.assertSlowOperationsAreAllowed)

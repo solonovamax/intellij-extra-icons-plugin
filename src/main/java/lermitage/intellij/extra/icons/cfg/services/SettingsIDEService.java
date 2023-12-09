@@ -27,6 +27,8 @@ public class SettingsIDEService extends SettingsService implements PersistentSta
     public Boolean pluginIsConfigurableHintNotifDisplayed;
     @SuppressWarnings("WeakerAccess")
     public Boolean iconviewerShouldRenderSVGHintNotifDisplayed;
+    @SuppressWarnings("WeakerAccess")
+    public Boolean lifetimeLicIntroHintNotifDisplayed;
 
     public static SettingsIDEService getInstance() {
         return ApplicationManager.getApplication().getService(SettingsIDEService.class);
@@ -95,5 +97,16 @@ public class SettingsIDEService extends SettingsService implements PersistentSta
 
     public void setIconviewerShouldRenderSVGHintNotifDisplayed(Boolean iconviewerShouldRenderSVGHintNotifDisplayed) {
         this.iconviewerShouldRenderSVGHintNotifDisplayed = iconviewerShouldRenderSVGHintNotifDisplayed;
+    }
+
+    public Boolean getLifetimeLicIntroHintNotifDisplayed() {
+        if (lifetimeLicIntroHintNotifDisplayed == null) {
+            lifetimeLicIntroHintNotifDisplayed = false;
+        }
+        return lifetimeLicIntroHintNotifDisplayed;
+    }
+
+    public void setLifetimeLicIntroHintNotifDisplayed(Boolean lifetimeLicIntroHintNotifDisplayed) {
+        this.lifetimeLicIntroHintNotifDisplayed = lifetimeLicIntroHintNotifDisplayed;
     }
 }

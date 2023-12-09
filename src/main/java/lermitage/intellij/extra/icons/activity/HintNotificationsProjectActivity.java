@@ -2,6 +2,7 @@
 
 package lermitage.intellij.extra.icons.activity;
 
+import com.intellij.ide.BrowserUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationAction;
 import com.intellij.notification.NotificationType;
@@ -37,8 +38,10 @@ public class HintNotificationsProjectActivity implements ProjectActivity {
     public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
         SettingsIDEService settingsIDEService = SettingsIDEService.getInstance();
 
+        boolean alwaysShowNotifications = System.getProperty("extra-icons.always.show.notifications", "false").equals("true"); //NON-NLS
+
         try {
-            if (!settingsIDEService.getPluginIsConfigurableHintNotifDisplayed()) {
+            if (!settingsIDEService.getPluginIsConfigurableHintNotifDisplayed() || alwaysShowNotifications) {
                 Notification notif = new Notification(Globals.PLUGIN_GROUP_DISPLAY_ID,
                     i18n.getString("notif.tips.plugin.config.title"),
                     i18n.getString("notif.tips.plugin.config.content"),
@@ -55,9 +58,28 @@ public class HintNotificationsProjectActivity implements ProjectActivity {
             settingsIDEService.setPluginIsConfigurableHintNotifDisplayed(true);
         }
 
+        // TODO uncomment once Lifetime licences are available
+        /*try {
+            if (!settingsIDEService.getLifetimeLicIntroHintNotifDisplayed() || alwaysShowNotifications) {
+                Notification notif = new Notification(Globals.PLUGIN_GROUP_DISPLAY_ID,
+                    i18n.getString("notif.tips.lifetime.lic.intro.title"),
+                    i18n.getString("notif.tips.lifetime.lic.intro.content"),
+                    NotificationType.INFORMATION);
+                notif.addAction(new NotificationAction(i18n.getString("notif.tips.lifetime.lic.intro.btn")) {
+                    @Override
+                    public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
+                        BrowserUtil.browse("https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license");
+                    }
+                });
+                Notifications.Bus.notify(notif);
+            }
+        } finally {
+            settingsIDEService.setLifetimeLicIntroHintNotifDisplayed(true);
+        }*/
+
         if (IJUtils.isIconViewer2Loaded()) {
             try {
-                if (!settingsIDEService.getIconviewerShouldRenderSVGHintNotifDisplayed()) {
+                if (!settingsIDEService.getIconviewerShouldRenderSVGHintNotifDisplayed() || alwaysShowNotifications) {
                     List<String> disabledModelIds = settingsIDEService.getDisabledModelIds();
                     if (!disabledModelIds.contains("ext_svg") || !disabledModelIds.contains("ext_svg_alt")) { //NON-NLS
                         Notification notif = new Notification(Globals.PLUGIN_GROUP_DISPLAY_ID,
