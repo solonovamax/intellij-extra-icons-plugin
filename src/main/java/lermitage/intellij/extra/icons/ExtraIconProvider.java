@@ -909,6 +909,14 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                     .eq(".prettierrc.toml")
                     .tags(ModelTag.PRETTIER)
                     .altIcons("extra-icons/prettier_alt.svg"),
+                ofFile("prettier-config-mjs", "extra-icons/prettier.svg", "Prettier: prettier.config.mjs")
+                    .eq("prettier.config.mjs")
+                    .tags(ModelTag.PRETTIER)
+                    .altIcons("extra-icons/prettier_alt.svg"),
+                ofFile("prettirrc-mjs", "extra-icons/prettier.svg", "Prettier: .prettirrc.mjs")
+                    .eq(".prettirrc.mjs")
+                    .tags(ModelTag.PRETTIER)
+                    .altIcons("extra-icons/prettier_alt.svg"),
                 ofFile("prettierignore", "extra-icons/prettierignore.svg", "Prettier: .prettierignore")
                     .eq(".prettierignore")
                     .tags(ModelTag.PRETTIER),
