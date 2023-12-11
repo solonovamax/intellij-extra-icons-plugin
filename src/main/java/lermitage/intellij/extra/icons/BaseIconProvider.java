@@ -75,6 +75,9 @@ public abstract class BaseIconProvider
     /**
      * Get list of all models managed by this icon provider. Their 'enabled' field doesn't matter.
      * This list will be processed by constructor and models 'enabled' field updated according to running IDE configuration.
+     * Useful if BaseIconProvider has multiple inheritors, per example if one of them depends on a 3rd-party plugin (did
+     * that for Angular, before removing it in favor of an Icon Enabler). May refactor and remove this method later if
+     * it's still not used.
      */
     protected abstract List<Model> getAllModels();
 
