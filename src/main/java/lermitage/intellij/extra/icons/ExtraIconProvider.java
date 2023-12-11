@@ -419,6 +419,25 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                     .tags(ModelTag.ANGULAR2, ModelTag.HTML),
                 //</editor-fold>
 
+                //<editor-fold desc="flutter">
+                ofFile("flutter_pubspecyaml", "extra-icons/flutter.svg", "Flutter: pubspec.yaml")
+                    .eq("pubspec.yaml")
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                ofFile("flutter_pubspeclock", "extra-icons/flutterlock.svg", "Flutter: pubspec.lock")
+                    .eq("pubspec.lock")
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                ofFile("flutter_metadata", "extra-icons/flutter-metadata.svg", "Flutter: .metadata")
+                    .eq(".metadata")
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                ofFile("flutter_analysisoptionsyaml", "extra-icons/flutter-analysisoptions.svg", "Flutter: analysis_options.yaml")
+                    .eq("analysis_options.yaml")
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                //</editor-fold>
+
                 //<editor-fold desc="elixir">
                 ofFile("elixir", "extra-icons/elixir.svg", "Elixir: *.ex, *.exs")
                     .end(".ex", ".exs", "mix.lock"),
