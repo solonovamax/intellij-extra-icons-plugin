@@ -113,7 +113,8 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                 ofDir("dir_gitlab", "extra-icons/folder_gitlab.svg", "Gitlab: .gitlab folder")
                     .eq(".gitlab"),
                 ofDir("dir_gradle", "extra-icons/folder_gradle.svg", "Gradle: gradle folder")
-                    .eq("gradle"),
+                    .eq("gradle")
+                    .inProjectRootFolder(),
                 ofDir("dir_idea", "extra-icons/folder_idea.svg", "IntelliJ IDEA: .idea folder")
                     .eq(".idea"),
                 ofDir("dir_ideasandbox", "extra-icons/folder_idea.svg", "IntelliJ IDEA: .idea-sandbox and idea-sandbox folders")
@@ -434,6 +435,47 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                     .tags(ModelTag.FLUTTER),
                 ofFile("flutter_analysisoptionsyaml", "extra-icons/flutter-analysisoptions.svg", "Flutter: analysis_options.yaml")
                     .eq("analysis_options.yaml")
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                ofDir("flutter_dirandroid", "extra-icons/folder_flutterandroid.svg", "Flutter: android folder")
+                    .eq("android")
+                    .autoLoadNewUIIconVariant()
+                    .inProjectRootFolder()
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                ofDir("flutter_dirlinux", "extra-icons/folder_flutterlinux.svg", "Flutter: linux folder")
+                    .eq("linux")
+                    .autoLoadNewUIIconVariant()
+                    .inProjectRootFolder()
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                ofDir("flutter_dirwindows", "extra-icons/folder_flutterwindows.svg", "Flutter: windows folder")
+                    .eq("windows")
+                    .autoLoadNewUIIconVariant()
+                    .inProjectRootFolder()
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                ofDir("flutter_dirios", "extra-icons/folder_flutterios.svg", "Flutter: ios folder")
+                    .eq("ios")
+                    .autoLoadNewUIIconVariant()
+                    .inProjectRootFolder()
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                ofDir("flutter_dirmacos", "extra-icons/folder_fluttermacos.svg", "Flutter: macos folder")
+                    .eq("macos")
+                    .autoLoadNewUIIconVariant()
+                    .inProjectRootFolder()
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                ofDir("flutter_dirweb", "extra-icons/folder_flutterweb.svg", "Flutter: web folder")
+                    .eq("web")
+                    .autoLoadNewUIIconVariant()
+                    .inProjectRootFolder()
+                    .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
+                    .tags(ModelTag.FLUTTER),
+                ofDir("flutter_dirdarttool", "extra-icons/folder_tmp.svg", "Flutter: .dart_tool folder")
+                    .eq(".dart_tool")
+                    .inProjectRootFolder()
                     .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
                     .tags(ModelTag.FLUTTER),
                 //</editor-fold>
