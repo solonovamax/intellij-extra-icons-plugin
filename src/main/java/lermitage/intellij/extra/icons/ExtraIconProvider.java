@@ -475,6 +475,7 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                     .tags(ModelTag.FLUTTER),
                 ofDir("flutter_dirdarttool", "extra-icons/folder_tmp.svg", "Flutter: .dart_tool folder")
                     .eq(".dart_tool")
+                    .autoLoadNewUIIconVariant()
                     .inProjectRootFolder()
                     .iconEnabler(IconEnablerType.IS_IN_FLUTTER_FOLDER)
                     .tags(ModelTag.FLUTTER),
