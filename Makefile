@@ -84,17 +84,17 @@ test: intro ## run unit tests
 
 .PHONY: cv
 cv: intro ## check dependencies and Gradle updates
-	${gradlew_cmd} dependencyUpdates --warning-mode all
+	${gradlew_cmd} dependencyUpdates --warning-mode all --console=plain
 
 
 .PHONY: cvnd
 cvnd: intro ## check dependencies and Gradle updates (use a single-use Gradle daemon process by using --no-daemon)
-	${gradlew_cmd} dependencyUpdates --warning-mode all --no-daemon
+	${gradlew_cmd} dependencyUpdates --warning-mode all --no-daemon --console=plain
 
 
 .PHONY: oga
 oga: intro ## check for deprecated groupId and artifactId coordinates
-	${gradlew_cmd} biz-lermitage-oga-gradle-check
+	${gradlew_cmd} biz-lermitage-oga-gradle-check --console=plain
 
 
 .PHONY: svgo

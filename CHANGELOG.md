@@ -2,8 +2,8 @@
 
 ## 2024.1.1 (WIP)
 * build script: prepare the work for the introduction of [lifetime licenses](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license).
-* improve Prettier support.
 * initial support of [Flutter](https://flutter.dev) icons.
+* improve Prettier support.
 * improve Gradle support.
 
 ## 2023.4.2 (2023/12/03)

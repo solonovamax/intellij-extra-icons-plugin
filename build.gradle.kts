@@ -29,6 +29,7 @@ plugins {
 }
 
 val pluginXmlFile = projectDir.resolve("src/main/resources/META-INF/plugin.xml")
+val pluginXmlFileBackup = projectDir.resolve("plugin.backup.xml")
 
 // Import variables from gradle.properties file
 val pluginDownloadIdeaSources: String by project
@@ -42,6 +43,10 @@ val pluginEnableDebugLogs: String by project
 val pluginEnforceIdeSlowOperationsAssertion: String by project
 val pluginClearSandboxedIDESystemLogsBeforeRun: String by project
 val pluginIdeaVersion = detectBestIdeVersion()
+val pluginLifetimeLicenseDescriptionHeader: String by project
+val pluginLifetimeLicenseId: String by project
+val pluginLifetimeLicenseCode: String by project
+val pluginLifetimeLicenseName: String by project
 
 version = if (pluginVersion == "auto") {
     val versionDetails: Closure<VersionDetails> by extra
@@ -125,6 +130,30 @@ tasks {
         }
     }
 
+    register("backupPluginXml") {
+        doLast {
+            if (pluginXmlFileBackup.exists()) {
+                if (!pluginXmlFileBackup.delete()) {
+                    throw GradleException("Failed to remove existing plugin xml file backup '${pluginXmlFileBackup}'")
+                }
+            }
+            FileUtils.copyFile(pluginXmlFile, pluginXmlFileBackup)
+        }
+    }
+    register("restorePluginXmlFromBackup") {
+        doLast {
+            if (!pluginXmlFileBackup.exists()) {
+                throw GradleException("Plugin xml file backup '${pluginXmlFileBackup}' is missing")
+            }
+            if (pluginXmlFile.exists()) {
+                if (!pluginXmlFile.delete()) {
+                    throw GradleException("Failed to remove non-original plugin xml file backup '${pluginXmlFile}'")
+                }
+            }
+            FileUtils.moveFile(pluginXmlFileBackup, pluginXmlFile)
+        }
+    }
+
     register("removeLicenseRestrictionFromPluginXml") {
         // Remove paid license requirement
         doLast {
@@ -134,16 +163,7 @@ tasks {
             var pluginXmlStr = pluginXmlFile.readText()
             val paidLicenceBlockRegex = "<product-descriptor code=\"\\w+\" release-date=\"\\d+\" release-version=\"\\d+\"/>".toRegex()
             val paidLicenceBlockStr = paidLicenceBlockRegex.find(pluginXmlStr)!!.value
-            pluginXmlStr = pluginXmlStr.replace(paidLicenceBlockStr, "<!--//FREE_LIC//${paidLicenceBlockStr}//FREE_LIC//-->")
-            FileUtils.delete(pluginXmlFile)
-            FileUtils.write(pluginXmlFile, pluginXmlStr, "UTF-8")
-        }
-    }
-    register("restoreLicenseRestrictionFromPluginXml") {
-        // Restore paid license requirement
-        doLast {
-            var pluginXmlStr = pluginXmlFile.readText()
-            pluginXmlStr = pluginXmlStr.replace("<!--//FREE_LIC//", "").replace("//FREE_LIC//-->", "")
+            pluginXmlStr = pluginXmlStr.replace(paidLicenceBlockStr, "<!-- LICENSE REMOVED -->")
             FileUtils.delete(pluginXmlFile)
             FileUtils.write(pluginXmlFile, pluginXmlStr, "UTF-8")
         }
@@ -164,23 +184,10 @@ tasks {
     register("renamePluginInfoToLifetimeInPluginXml") {
         doLast {
             var pluginXmlStr = pluginXmlFile.readText()
-            pluginXmlStr = pluginXmlStr.replace("<id>lermitage.intellij.extra.icons</id>", "<id>lermitage.extra.icons.lifetime</id>")
-            pluginXmlStr = pluginXmlStr.replace("<name>Extra Icons</name>", "<name>Extra Icons Lifetime</name>")
-            pluginXmlStr = pluginXmlStr.replace("<product-descriptor code=\"PEXTRAICONS\"", "<product-descriptor code=\"PEXTRAICONSLIFE\"")
-            pluginXmlStr = pluginXmlStr.replace("<!--//LIFETIMELIC_START//", "<!--//LIFETIMELIC_START//-->")
-            pluginXmlStr = pluginXmlStr.replace("//LIFETIMELIC_END//-->", "<!--//LIFETIMELIC_END//-->")
-            FileUtils.delete(pluginXmlFile)
-            FileUtils.write(pluginXmlFile, pluginXmlStr, "UTF-8")
-        }
-    }
-    register("restorePluginInfoFromLifetimeInPluginXml") {
-        doLast {
-            var pluginXmlStr = pluginXmlFile.readText()
-            pluginXmlStr = pluginXmlStr.replace("<id>lermitage.extra.icons.lifetime</id>", "<id>lermitage.intellij.extra.icons</id>")
-            pluginXmlStr = pluginXmlStr.replace("<name>Extra Icons Lifetime</name>", "<name>Extra Icons</name>")
-            pluginXmlStr = pluginXmlStr.replace("<product-descriptor code=\"PEXTRAICONSLIFE\"", "<product-descriptor code=\"PEXTRAICONS\"")
-            pluginXmlStr = pluginXmlStr.replace("<!--//LIFETIMELIC_START//-->", "<!--//LIFETIMELIC_START//")
-            pluginXmlStr = pluginXmlStr.replace("<!--//LIFETIMELIC_END//-->", "//LIFETIMELIC_END//-->")
+            pluginXmlStr = pluginXmlStr.replace("<id>lermitage.intellij.extra.icons</id>", "<id>$pluginLifetimeLicenseId</id>")
+            pluginXmlStr = pluginXmlStr.replace("<name>Extra Icons</name>", "<name>$pluginLifetimeLicenseName</name>")
+            pluginXmlStr = pluginXmlStr.replace("<product-descriptor code=\"PEXTRAICONS\"", "<product-descriptor code=\"$pluginLifetimeLicenseCode\"")
+            pluginXmlStr = pluginXmlStr.replace("<description><![CDATA[", "<description><![CDATA[$pluginLifetimeLicenseDescriptionHeader")
             FileUtils.delete(pluginXmlFile)
             FileUtils.write(pluginXmlFile, pluginXmlStr, "UTF-8")
         }
@@ -291,11 +298,11 @@ tasks {
     patchPluginXml {
         when (pluginLicenseType) {
             "free" -> {
-                dependsOn("removeLicenseRestrictionFromPluginXml")
+                dependsOn("backupPluginXml", "removeLicenseRestrictionFromPluginXml")
             }
 
             "lifetime" -> {
-                dependsOn("renamePluginInfoToLifetimeInPluginXml", "verifyProductDescriptor")
+                dependsOn("backupPluginXml", "renamePluginInfoToLifetimeInPluginXml", "verifyProductDescriptor")
             }
 
             else -> {
@@ -311,11 +318,11 @@ tasks {
     buildPlugin {
         when (pluginLicenseType) {
             "free" -> {
-                finalizedBy("restoreLicenseRestrictionFromPluginXml", "renameDistributionNoLicense")
+                finalizedBy("restorePluginXmlFromBackup", "renameDistributionNoLicense")
             }
 
             "lifetime" -> {
-                finalizedBy("restorePluginInfoFromLifetimeInPluginXml", "renameDistributionLifetimeLicense")
+                finalizedBy("restorePluginXmlFromBackup", "renameDistributionLifetimeLicense")
             }
         }
     }
