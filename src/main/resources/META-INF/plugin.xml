@@ -50,6 +50,7 @@
     <depends>com.intellij.modules.platform</depends>
 
     <!-- Icon Patchers override file icon by icon name -->
+    <!--suppress PluginXmlDynamicPlugin --> <!-- PluginXmlDynamicPlugin suppressed because plugin already has 'require-restart="true"' -->
     <application-components>
         <component>
             <implementation-class>lermitage.intellij.extra.icons.ExtraIconPatcher</implementation-class>
