@@ -59,22 +59,24 @@ public class HintNotificationsProjectActivity implements ProjectActivity {
         }
 
         // TODO uncomment once Lifetime licences are available
-        /*try {
-            if (!settingsIDEService.getLifetimeLicIntroHintNotifDisplayed() || alwaysShowNotifications) {
-                Notification notif = new Notification(Globals.PLUGIN_GROUP_DISPLAY_ID,
-                    i18n.getString("notif.tips.lifetime.lic.intro.title"),
-                    i18n.getString("notif.tips.lifetime.lic.intro.content"),
-                    NotificationType.INFORMATION);
-                notif.addAction(new NotificationAction(i18n.getString("notif.tips.lifetime.lic.intro.btn")) {
-                    @Override
-                    public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
-                        BrowserUtil.browse("https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license");
-                    }
-                });
-                Notifications.Bus.notify(notif);
+        /*if (!IJUtils.isExtraIconsLifetimeLoaded()) {
+            try {
+                if (!settingsIDEService.getLifetimeLicIntroHintNotifDisplayed() || alwaysShowNotifications) {
+                    Notification notif = new Notification(Globals.PLUGIN_GROUP_DISPLAY_ID,
+                        i18n.getString("notif.tips.lifetime.lic.intro.title"),
+                        i18n.getString("notif.tips.lifetime.lic.intro.content"),
+                        NotificationType.INFORMATION);
+                    notif.addAction(new NotificationAction(i18n.getString("notif.tips.lifetime.lic.intro.btn")) {
+                        @Override
+                        public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
+                            BrowserUtil.browse("https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license");
+                        }
+                    });
+                    Notifications.Bus.notify(notif);
+                }
+            } finally {
+                settingsIDEService.setLifetimeLicIntroHintNotifDisplayed(true);
             }
-        } finally {
-            settingsIDEService.setLifetimeLicIntroHintNotifDisplayed(true);
         }*/
 
         if (IJUtils.isIconViewer2Loaded()) {
@@ -108,6 +110,7 @@ public class HintNotificationsProjectActivity implements ProjectActivity {
                 settingsIDEService.setIconviewerShouldRenderSVGHintNotifDisplayed(true);
             }
         }
+
         return null;
     }
 }
