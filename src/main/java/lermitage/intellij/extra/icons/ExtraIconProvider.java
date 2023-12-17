@@ -938,6 +938,10 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                     .eq(".npmrc"),
                 ofFile("npmignore", "extra-icons/npmignore.svg", "NPM: .npmignore")
                     .eq(".npmignore"),
+                ofFile("noai", "extra-icons/noai.svg", "AI Assistant: .noai (block AI features for the project)")
+                    .eq(".noai")
+                    .inProjectRootFolder()
+                    .altIcons("extra-icons/noai_alt.svg"),
                 ofFile("notice", "extra-icons/notice.svg", "Notice: notice(.md,.txt,.adoc,.rst)")
                     .eq("notice").mayEnd(TXT),
                 ofFile("nox", "extra-icons/nox.svg", "Nox: noxfile.py")
