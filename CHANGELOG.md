@@ -5,6 +5,7 @@
 * initial support of [Flutter](https://flutter.dev) icons.
 * improve Prettier support.
 * improve Gradle support.
+* rework Privacy icon.
 
 ## 2023.4.2 (2023/12/03)
 * **INFO**: JetBrains will introduce a new business model for paid/freemium plugins. This model will offer a perpetual license, **allowing users to make a one-time payment for the plugin and use it for a lifetime**. [Get more information here](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license).
