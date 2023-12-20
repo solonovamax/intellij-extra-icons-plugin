@@ -35,7 +35,7 @@ You can activate your coupons when you want, they have no expiration date.
 
 ## Will we have to pay for your [other plugins](https://plugins.jetbrains.com/author/ed9cc7eb-74f5-46c1-b0df-67162fe1a1c5)?
 
-I have no plan for that. I now have supporters thx to the Extra Icons project, and I am super happy with that. I don't provide OSS to make money, I already have a good job.
+I have no plan for that. I now have supporters thx to the Extra Icons project, and I am super happy with that. I don't provide OSS to make money.
 
 ## Why a paid plugin?
 
