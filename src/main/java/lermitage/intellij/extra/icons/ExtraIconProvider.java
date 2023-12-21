@@ -126,19 +126,19 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                     .altIcons("extra-icons/folder_jpabuddy_alt.svg", "extra-icons/folder_jpabuddy_alt2.svg",
                         "extra-icons/folder_jpabuddy_alt3.svg")
                     .autoLoadNewUIIconVariant(),
-                ofDir("dir_log", "extra-icons/folder_tmp.svg", "Misc: 'log' folder at root level")
+                ofDir("dir_log", "extra-icons/folder_tmp.svg", "Logs: 'log' folder at project's root level")
                     .eq("log")
                     .inProjectRootFolder()
                     .autoLoadNewUIIconVariant(),
-                ofDir("dir_dotlog", "extra-icons/folder_tmp.svg", "Misc: '.log' folder at root level")
+                ofDir("dir_dotlog", "extra-icons/folder_tmp.svg", "Logs: '.log' folder at project's root level")
                     .eq(".log")
                     .inProjectRootFolder()
                     .autoLoadNewUIIconVariant(),
-                ofDir("dir_logs", "extra-icons/folder_tmp.svg", "Misc: 'logs' folder at root level")
+                ofDir("dir_logs", "extra-icons/folder_tmp.svg", "Logs: 'logs' folder at project's root level")
                     .eq("logs")
                     .inProjectRootFolder()
                     .autoLoadNewUIIconVariant(),
-                ofDir("dir_dotlogs", "extra-icons/folder_tmp.svg", "Misc: '.logs' folder at root level")
+                ofDir("dir_dotlogs", "extra-icons/folder_tmp.svg", "Logs: '.logs' folder at project's root level")
                     .eq(".logs")
                     .inProjectRootFolder()
                     .autoLoadNewUIIconVariant(),
