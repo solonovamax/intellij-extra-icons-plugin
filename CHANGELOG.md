@@ -1,7 +1,8 @@
 # Extra Icons Change Log
 
-## 2024.1.1 (WIP)
-* build script: prepare the work for the introduction of [lifetime licenses](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license).
+## 2024.1.1 (planned for 2024/01/02)
+* **INFO**: JetBrains will introduce a new business model for paid/freemium plugins. This model will offer a perpetual license, **allowing users to make a one-time payment for the plugin and use it for a lifetime**. [Get more information here](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license). There is no ETA yet.
+* build script: prepare the work for the introduction of lifetime licenses.
 * initial support of [Flutter](https://flutter.dev) icons.
 * improve Prettier support.
 * improve Gradle support.
