@@ -780,6 +780,8 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                     .eq("cerebro").mayEnd(".conf"),
                 ofFile("cerebro1", "extra-icons/elastic-cerebro.svg", "Cerebro: start by 'cerebro' and end by '.conf'")
                     .start("cerebro").end(".conf"),
+                ofFile("detekt", "extra-icons/detekt.svg", "Detekt: end by 'detekt-config.yml' or 'detekt.yml'")
+                    .end("detekt-config.yml", "detekt.yml"),
                 ofFile("faq", "extra-icons/faq.svg", "FAQ: faq(.md,.txt,.adoc,.rst)")
                     .eq("faq").mayEnd(TXT)
                     .altIcons("extra-icons/faq_alt.svg", "extra-icons/faq_alt2.svg",
