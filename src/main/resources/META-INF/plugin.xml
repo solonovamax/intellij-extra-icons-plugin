@@ -20,7 +20,7 @@
       </ul>
       📢 Starting from 2024, I will occasionally send some <a href="https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#i-received-a-coupon-for-a-free-license-how-does-it-work">coupons</a> for Free licenses on <a href="https://twitter.com/JLermitage">Twitter</a> and <a href="https://bsky.app/profile/jonathanlermitage.bsky.social">Bluesky</a>. Stay tuned.
       <br><br>
-      📢 If you want to <b>speed up</b> the resolution of a few problems on JetBrains side affecting this plugin, or <b>help plugin developers</b>, please consider up-voting these YouTrack issues:
+      📢 If you want to speed up the resolution of a few problems on JetBrains side affecting this plugin, or help plugin developers, please consider up-voting these YouTrack issues:
       <ul>
         <li><a href="https://youtrack.jetbrains.com/issue/IDEA-247819"><b>IDEA-247819</b></a>: IntelliJ does not allow folder icons override in Packages View. This issue has been submitted 3 years ago (Aug 2020), it definitively needs more visibility.</li>
         <li><a href="https://youtrack.jetbrains.com/issue/IDEA-339254"><b>IDEA-339254</b></a>: IntelliJ shows default Class icon for Java Exceptions until you modify them. You have to modify Java Exception files to see the corresponding Exception icon.</li>
