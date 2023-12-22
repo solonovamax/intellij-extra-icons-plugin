@@ -9,6 +9,7 @@
 * rework Privacy icon.
 * support `(.)log(s)`folders.
 * support `.noai` files (which tell the AI Assistant plugin to block AI features for the containing project).
+* starting from 2024, I will occasionally send some [coupons](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#i-received-a-coupon-for-a-free-license-how-does-it-work) for Free licenses on [Twitter](https://twitter.com/JLermitage) and [Bluesky](https://bsky.app/profile/jonathanlermitage.bsky.social). Stay tuned.
 
 ## 2023.4.2 (2023/12/03)
 * **INFO**: JetBrains will introduce a new business model for paid/freemium plugins. This model will offer a perpetual license, **allowing users to make a one-time payment for the plugin and use it for a lifetime**. [Get more information here](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license).
