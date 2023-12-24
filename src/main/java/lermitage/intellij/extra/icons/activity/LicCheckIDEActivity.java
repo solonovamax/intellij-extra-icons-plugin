@@ -38,6 +38,8 @@ public class LicCheckIDEActivity implements ProjectActivity {
 
     private static boolean started = false; // TODO start once per IDE, not per project opening
 
+    private static boolean requestLicenseShown = false;
+
     @Nullable
     @Override
     public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
@@ -78,7 +80,10 @@ public class LicCheckIDEActivity implements ProjectActivity {
                             ExtraIconsLicenseStatus.setLicenseActivated(false);
                             LOGGER.warn("Failed to validate Extra Icons license. Disable all Extra Icons until license activation");
                             RefreshIconsNotifierService.getInstance().triggerAllIconsRefreshAndIconEnablersReinit();
-                            ExtraIconsLicenseCheck.requestLicense(installedPluginType.getProductCode(), i18n.getString("license.required.msg"));
+                            if (!requestLicenseShown) {
+                                requestLicenseShown = true;
+                                ExtraIconsLicenseCheck.requestLicense(installedPluginType.getProductCode(), i18n.getString("license.required.msg"));
+                            }
                         }
                     }
                 }, check_delay, check_period);
