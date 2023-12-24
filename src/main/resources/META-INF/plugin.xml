@@ -5,7 +5,7 @@
     <vendor email="jonathan@lermitage.biz" url="https://github.com/jonathanlermitage">JONATHAN_LERMITAGE</vendor>
     <!-- required parameters for paid plugins: https://plugins.jetbrains.com/docs/marketplace/add-required-parameters.html -->
     <!-- IMPORTANT reminder: change the release-date and release-version on major version changes only -->
-    <product-descriptor code="PEXTRAICONS" release-date="20240101" release-version="20241"/>
+    <product-descriptor code="PEXTRAICONS" release-date="20231105" release-version="20233"/>
 
     <description><![CDATA[
       <ul>
@@ -100,9 +100,10 @@
         <!-- Startup tasks https://plugins.jetbrains.com/docs/intellij/plugin-components.html#project-open -->
         <!-- Init all Icon Enablers once indexing is done then reload projects icons -->
         <!-- Subscribe to a message bus in order to manage icons refreshing -->
-        <postStartupActivity implementation="lermitage.intellij.extra.icons.activity.RefreshIconsListenerProjectActivity"
-                             id="ExtraIcons_RefreshIconsListenerProjectActivity"
-                             order="last, before ExtraIcons_EnablerServicesProjectActivity, before ExtraIcons_HintNotificationsProjectActivity, before ExtraIcons_VFSChangesListenersProjectActivity"/>
+        <postStartupActivity
+            implementation="lermitage.intellij.extra.icons.activity.RefreshIconsListenerProjectActivity"
+            id="ExtraIcons_RefreshIconsListenerProjectActivity"
+            order="last, before ExtraIcons_EnablerServicesProjectActivity, before ExtraIcons_HintNotificationsProjectActivity, before ExtraIcons_VFSChangesListenersProjectActivity"/>
         <postStartupActivity implementation="lermitage.intellij.extra.icons.activity.EnablerServicesProjectActivity"
                              id="ExtraIcons_EnablerServicesProjectActivity"
                              order="last"/>
@@ -114,7 +115,10 @@
         <postStartupActivity implementation="lermitage.intellij.extra.icons.activity.VFSChangesListenersProjectActivity"
                              id="ExtraIcons_VFSChangesListenersProjectActivity"
                              order="last, after ExtraIcons_EnablerServicesProjectActivity"/>
-
+        <!-- Check plugin's license activation -->
+        <backgroundPostStartupActivity implementation="lermitage.intellij.extra.icons.activity.LicCheckProjectActivity"
+                                       id="ExtraIcons_LicCheckProjectActivity"
+                                       order="last"/>
     </extensions>
 
 </idea-plugin>

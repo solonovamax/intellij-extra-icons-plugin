@@ -161,6 +161,8 @@ tasks {
             logger.warn("/!\\ Will build a plugin which doesn't ask for a paid license /!\\")
             logger.warn("----------------------------------------------------------------")
             var pluginXmlStr = pluginXmlFile.readText()
+            pluginXmlStr = pluginXmlStr.replace("<id>lermitage.intellij.extra.icons</id>", "<id>lermitage.extra.icons.free</id>")
+            pluginXmlStr = pluginXmlStr.replace("<name>Extra Icons</name>", "<name>Extra Icons Free</name>")
             val paidLicenceBlockRegex = "<product-descriptor code=\"\\w+\" release-date=\"\\d+\" release-version=\"\\d+\"/>".toRegex()
             val paidLicenceBlockStr = paidLicenceBlockRegex.find(pluginXmlStr)!!.value
             pluginXmlStr = pluginXmlStr.replace(paidLicenceBlockStr, "<!-- LICENSE REMOVED -->")
