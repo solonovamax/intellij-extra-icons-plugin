@@ -119,7 +119,7 @@ PdiG2uPH5eDO6INcisyPpLS4yFKliaO4Jjap7yzLU9pbItoWgCAYa2NpxuxHJ0tB
 -----END CERTIFICATE-----"""
     };
 
-    private static final long TIMESTAMP_VALIDITY_PERIOD_MS = 24 * 3_600_000;  // configure period that suits your needs better hr
+    private static final long TIMESTAMP_VALIDITY_PERIOD_MS = 24 * 3_600_000;  // configure period that suits your needs better
 
     /**
      * @return TRUE if licensed, FALSE otherwise. Null return value means the LicensingFacade
