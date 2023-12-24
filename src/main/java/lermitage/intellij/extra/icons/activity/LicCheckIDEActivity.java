@@ -30,20 +30,28 @@ import java.util.stream.Collectors;
 /**
  * Check licence periodically.
  */
-public class LicCheckProjectActivity implements ProjectActivity {
+public class LicCheckIDEActivity implements ProjectActivity {
 
     private static final @NonNls Logger LOGGER = Logger.getInstance(BaseIconProvider.class);
 
     private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
 
+    private static boolean started = false; // TODO start once per IDE, not per project opening
+
     @Nullable
     @Override
     public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
+        if (started) {
+            return null; // workaround in order to keep only once timer per IDE instead of one timer per project opening
+        }
+        started = true;
+        LOGGER.info("Started Extra Icons license checker");
+
         int check_delay = 30_000; // 30 sec
         int check_period = 3_600_000; // 1 hr
         if ("true".equals(System.getenv("EXTRA_ICONS_TEST_MODE"))) {
             check_delay = 3_000; // 3 sec
-            check_period = 240_000; // 4 min
+            check_period = 3_000; // 4 min
         }
 
         long t1 = System.currentTimeMillis();
@@ -82,7 +90,7 @@ public class LicCheckProjectActivity implements ProjectActivity {
     }
 
     private ExtraIconsPluginType findInstalledPluginType() {
-        PluginDescriptor pluginDesc = PluginManager.getPluginByClass(LicCheckProjectActivity.class);
+        PluginDescriptor pluginDesc = PluginManager.getPluginByClass(LicCheckIDEActivity.class);
         if (pluginDesc == null) {
             LOGGER.warn("Failed to find installed Extra Icons plugin by class, will list all installed plugins and try to find it");
             Set<String> registeredIds = PluginId.getRegisteredIds().stream()

@@ -116,7 +116,7 @@
                              id="ExtraIcons_VFSChangesListenersProjectActivity"
                              order="last, after ExtraIcons_EnablerServicesProjectActivity"/>
         <!-- Check plugin's license activation -->
-        <backgroundPostStartupActivity implementation="lermitage.intellij.extra.icons.activity.LicCheckProjectActivity"
+        <backgroundPostStartupActivity implementation="lermitage.intellij.extra.icons.activity.LicCheckIDEActivity"
                                        id="ExtraIcons_LicCheckProjectActivity"
                                        order="last"/>
     </extensions>
