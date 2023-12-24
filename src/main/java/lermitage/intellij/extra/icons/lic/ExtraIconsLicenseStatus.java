@@ -6,6 +6,7 @@ public class ExtraIconsLicenseStatus {
 
     private static boolean licenseActivated = true;
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static synchronized boolean isLicenseActivated() {
         return licenseActivated;
     }

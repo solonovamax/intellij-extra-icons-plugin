@@ -90,6 +90,8 @@ public class LicCheckIDEActivity implements ProjectActivity {
             } catch (Exception e) {
                 LOGGER.warn(e);
             }
+        } else {
+            ExtraIconsLicenseStatus.setLicenseActivated(true);
         }
         return null;
     }
