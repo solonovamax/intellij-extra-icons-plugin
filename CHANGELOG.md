@@ -6,7 +6,8 @@
 * initial support of [Flutter](https://flutter.dev) icons.
 * improve Prettier support.
 * improve Gradle support.
-* add the new alternative GitLab "next" orange icon for `.gitlab-ci.yml` files. 
+* add the new alternative GitLab "next" orange icon for `.gitlab-ci.yml` files.
+* rework GitLab folder icon.
 * rework Privacy icon.
 * support `(.)log(s)`folders.
 * support `.noai` files (which tell the AI Assistant plugin to block AI features for the containing project).
