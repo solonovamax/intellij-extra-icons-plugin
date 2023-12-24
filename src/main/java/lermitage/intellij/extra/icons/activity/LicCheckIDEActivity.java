@@ -53,7 +53,7 @@ public class LicCheckIDEActivity implements ProjectActivity {
         int check_period = 3_600_000; // 1 hr
         if ("true".equals(System.getenv("EXTRA_ICONS_TEST_MODE"))) {
             check_delay = 3_000; // 3 sec
-            check_period = 3_000; // 4 min
+            check_period = 240_000; // 4 min
         }
 
         long t1 = System.currentTimeMillis();
