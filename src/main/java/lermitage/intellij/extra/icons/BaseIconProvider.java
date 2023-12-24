@@ -65,7 +65,9 @@ public abstract class BaseIconProvider
     public BaseIconProvider() {
         super();
         final UIType uiType = NewUI.isEnabled() ? UIType.NEW_UI : UIType.OLD_UI;
-        LOGGER.info("Detected UI Type: " + uiType);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Detected UI Type: " + uiType);
+        }
         this.models = getAllModels().stream()
             .filter(model -> model.getModelType() == ModelType.FILE || model.getModelType() == ModelType.DIR)
             .filter(model -> model.getUiType() == null || model.getUiType() == uiType)
