@@ -10,6 +10,7 @@ import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.util.ui.EDT;
+import lermitage.intellij.extra.icons.lic.ExtraIconsPluginType;
 import org.jetbrains.annotations.NonNls;
 
 public class IJUtils {
@@ -30,7 +31,7 @@ public class IJUtils {
      * Indicate if plugin <b>Extra Icons Lifetime</b> is installed and enabled.
      */
     public static boolean isExtraIconsLifetimeLoaded() {
-        return isPluginLoaded("lermitage.extra.icons.lifetime");
+        return isPluginLoaded(ExtraIconsPluginType.LIFETIME.getPluginId());
     }
 
     public static boolean isPluginLoaded(String pluginId) {
