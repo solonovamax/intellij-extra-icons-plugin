@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.ProjectActivity;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
-import lermitage.intellij.extra.icons.BaseIconProvider;
 import lermitage.intellij.extra.icons.lic.ExtraIconsLicenseCheck;
 import lermitage.intellij.extra.icons.lic.ExtraIconsLicenseStatus;
 import lermitage.intellij.extra.icons.lic.ExtraIconsPluginType;
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
  */
 public class LicCheckIDEActivity implements ProjectActivity {
 
-    private static final @NonNls Logger LOGGER = Logger.getInstance(BaseIconProvider.class);
+    private static final @NonNls Logger LOGGER = Logger.getInstance(LicCheckIDEActivity.class);
 
     private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
 
