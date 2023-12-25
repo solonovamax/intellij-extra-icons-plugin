@@ -237,6 +237,7 @@ tasks {
     }
     withType<Test> {
         useJUnitPlatform()
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
 
         // avoid JBUIScale "Must be precomputed" error, because IDE is not started (LoadingState.APP_STARTED.isOccurred is false)
         jvmArgs("-Djava.awt.headless=true")
