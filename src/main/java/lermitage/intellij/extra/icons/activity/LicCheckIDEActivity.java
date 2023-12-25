@@ -50,7 +50,7 @@ public class LicCheckIDEActivity implements ProjectActivity {
         LOGGER.info("Started Extra Icons license checker");
 
         int check_delay = 30_000; // 30 sec
-        int check_period = 3_600_000; // 1 hr
+        int check_period = 3 * 3_600_000; // 3 hrs
         if ("true".equals(System.getenv("EXTRA_ICONS_TEST_MODE"))) {
             check_delay = 3_000; // 3 sec
             check_period = 240_000; // 4 min

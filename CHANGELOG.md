@@ -12,7 +12,7 @@
 * support `(.)log(s)`folders.
 * support `.noai` files (which tell the AI Assistant plugin to block AI features for the containing project).
 * support [Detekt](https://detekt.dev/docs/introduction/configurations/) files ending by `detekt-config.yml` or `detekt.yml` (I may try to pick the configured Detekt filename from the `build.gradle(.kts)` file later).
-* plugin's license is now verified hourly. There is no performance impact (less than 15ms, usually 5-10ms on a slow VM). No internet connection is required.
+* plugin's license is now verified every 3 hours.
 * starting from 2024, I will occasionally send some [coupons](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#i-received-a-coupon-for-a-free-license-how-does-it-work) for Free licenses on [Twitter](https://twitter.com/JLermitage) and [Bluesky](https://bsky.app/profile/jonathanlermitage.bsky.social). Stay tuned.
 
 ## 2023.4.2 (2023/12/03)
