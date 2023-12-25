@@ -49,11 +49,13 @@ public class LicCheckIDEActivity implements ProjectActivity {
         started = true;
         LOGGER.info("Started Extra Icons license checker");
 
-        int check_delay = 30_000; // 30 sec
+        int check_delay_1 = 60_000; // 1 min
+        int check_delay_2 = 3_600_000; // 1 hr
         int check_period = 3 * 3_600_000; // 3 hrs
         if ("true".equals(System.getenv("EXTRA_ICONS_TEST_MODE"))) {
-            check_delay = 3_000; // 3 sec
-            check_period = 240_000; // 4 min
+            check_delay_1 = 3_000; // 3 sec
+            check_delay_2 = 30_000; // 30 sec
+            check_period = 180_000; // 3 min
         }
 
         long t1 = System.currentTimeMillis();
@@ -64,29 +66,11 @@ public class LicCheckIDEActivity implements ProjectActivity {
         if (installedPluginType.isRequiresLicense()) {
             try {
                 ExtraIconsLicenseStatus.setLicenseActivated(true);
-                LOGGER.info("Will check Extra Icons license in " + check_delay / 1000 + " sec, then every " + check_period / 1000 + " sec");
-                Timer timer = new Timer();
-                timer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        long t1 = System.currentTimeMillis();
-                        Boolean isLicensed = ExtraIconsLicenseCheck.isLicensed(installedPluginType.getProductCode());
-                        long t2 = System.currentTimeMillis();
-                        LOGGER.warn("Checked Extra Icons license in " + (t2 - t1) + " ms. User has a valid license: " + isLicensed);
-                        if (isLicensed == null) {
-                            LOGGER.warn("Extra Icons license check returned null. Ignoring for now");
-                        }
-                        if (isLicensed != null && !isLicensed) {
-                            ExtraIconsLicenseStatus.setLicenseActivated(false);
-                            LOGGER.warn("Failed to validate Extra Icons license. Disable all Extra Icons until license activation");
-                            RefreshIconsNotifierService.getInstance().triggerAllIconsRefreshAndIconEnablersReinit();
-                            if (!requestLicenseShown) {
-                                requestLicenseShown = true;
-                                ExtraIconsLicenseCheck.requestLicense(installedPluginType.getProductCode(), i18n.getString("license.required.msg"));
-                            }
-                        }
-                    }
-                }, check_delay, check_period);
+                LOGGER.info("Will check Extra Icons license in " + check_delay_1 / 1000 + " sec, " +
+                    "in " + check_delay_2 / 1000 + " sec, " +
+                    "then every " + check_period / 1000 + " sec");
+                new Timer().schedule(createLicenseCheckerTimerTask(installedPluginType), check_delay_1);
+                new Timer().scheduleAtFixedRate(createLicenseCheckerTimerTask(installedPluginType), check_delay_2, check_period);
             } catch (Exception e) {
                 LOGGER.warn(e);
             }
@@ -94,6 +78,31 @@ public class LicCheckIDEActivity implements ProjectActivity {
             ExtraIconsLicenseStatus.setLicenseActivated(true);
         }
         return null;
+    }
+
+    private TimerTask createLicenseCheckerTimerTask(ExtraIconsPluginType installedPluginType) {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                long t1 = System.currentTimeMillis();
+                Boolean isLicensed = ExtraIconsLicenseCheck.isLicensed(installedPluginType.getProductCode());
+                long t2 = System.currentTimeMillis();
+                LOGGER.info("Checked Extra Icons license in " + (t2 - t1) + " ms. User has a valid license: " + isLicensed);
+                if (isLicensed == null) {
+                    LOGGER.warn("Extra Icons license check returned null. Let's consider user has a valid license, " +
+                        "and retry license check later");
+                }
+                if (isLicensed != null && !isLicensed) {
+                    ExtraIconsLicenseStatus.setLicenseActivated(false);
+                    LOGGER.warn("Failed to validate Extra Icons license. Disable all Extra Icons until license activation");
+                    RefreshIconsNotifierService.getInstance().triggerAllIconsRefreshAndIconEnablersReinit();
+                    if (!requestLicenseShown) {
+                        requestLicenseShown = true;
+                        ExtraIconsLicenseCheck.requestLicense(installedPluginType.getProductCode(), i18n.getString("license.required.msg"));
+                    }
+                }
+            }
+        };
     }
 
     private ExtraIconsPluginType findInstalledPluginType() {
