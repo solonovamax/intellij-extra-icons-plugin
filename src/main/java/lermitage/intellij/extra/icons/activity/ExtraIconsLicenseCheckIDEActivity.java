@@ -35,7 +35,7 @@ public class ExtraIconsLicenseCheckIDEActivity implements ProjectActivity {
 
     private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
 
-    private static boolean started = false; // TODO start once per IDE, not per project opening
+    private static boolean started = false; // TODO improve workaround and start once per IDE, not per project opening
 
     private static boolean requestLicenseShown = false;
 
