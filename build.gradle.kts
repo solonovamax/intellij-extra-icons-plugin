@@ -47,6 +47,8 @@ val pluginLifetimeLicenseDescriptionHeader: String by project
 val pluginLifetimeLicenseId: String by project
 val pluginLifetimeLicenseCode: String by project
 val pluginLifetimeLicenseName: String by project
+val pluginFreeId: String by project
+val pluginFreeName: String by project
 
 version = if (pluginVersion == "auto") {
     val versionDetails: Closure<VersionDetails> by extra
@@ -161,8 +163,8 @@ tasks {
             logger.warn("/!\\ Will build a plugin which doesn't ask for a paid license /!\\")
             logger.warn("----------------------------------------------------------------")
             var pluginXmlStr = pluginXmlFile.readText()
-            pluginXmlStr = pluginXmlStr.replace("<id>lermitage.intellij.extra.icons</id>", "<id>lermitage.extra.icons.free</id>")
-            pluginXmlStr = pluginXmlStr.replace("<name>Extra Icons</name>", "<name>Extra Icons Free</name>")
+            pluginXmlStr = pluginXmlStr.replace("<id>lermitage.intellij.extra.icons</id>", "<id>${pluginFreeId}</id>")
+            pluginXmlStr = pluginXmlStr.replace("<name>Extra Icons</name>", "<name>${pluginFreeName}</name>")
             val paidLicenceBlockRegex = "<product-descriptor code=\"\\w+\" release-date=\"\\d+\" release-version=\"\\d+\"/>".toRegex()
             val paidLicenceBlockStr = paidLicenceBlockRegex.find(pluginXmlStr)!!.value
             pluginXmlStr = pluginXmlStr.replace(paidLicenceBlockStr, "<!-- LICENSE REMOVED -->")
