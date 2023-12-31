@@ -3,7 +3,7 @@
 ## 2024.1.1 (2024/01/02)
 * **INFO**: JetBrains will introduce a new business model for paid/freemium plugins. This model will offer a perpetual license, **allowing users to make a one-time payment for the plugin and use it for a lifetime**. [Get more information here](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license). There is no ETA yet.
 * build script: prepare the work for the introduction of lifetime licenses.
-* fix [#175](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/175): ` java.lang.Throwable: Must be precomputed`. UI Scale detection could fail at startup. It should be fixed now.
+* fix [#175](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/175): `java.lang.Throwable: Must be precomputed`. UI Scale detection could fail at startup. It should be fixed now.
 * initial support of [Flutter](https://flutter.dev) icons.
 * improve Prettier support.
 * improve Gradle support.
