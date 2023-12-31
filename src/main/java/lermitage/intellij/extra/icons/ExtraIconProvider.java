@@ -1016,6 +1016,9 @@ public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
                     .start("puppet").end(".conf"),
                 ofFile("pytest", "extra-icons/pytest.svg", "Pytest: pytest.ini")
                     .eq("pytest.ini"),
+                ofFile("qodana", "extra-icons/qodana.svg", "Qodana: qodana.yaml")
+                    .eq("qodana.yaml")
+                    .altIcons("extra-icons/qodana_alt.svg"),
                 ofFile("readme", "extra-icons/readme.svg", "Readme: readme(.md,.txt,.adoc,.rst), lisezmoi")
                     .eq("readme", "lisezmoi").mayEnd(TXT)
                     .altIcons("extra-icons/readme_alt.svg", "extra-icons/readme_alt2.svg"),
