@@ -31,6 +31,11 @@ plugins {
 val pluginXmlFile = projectDir.resolve("src/main/resources/META-INF/plugin.xml")
 val pluginXmlFileBackup = projectDir.resolve("plugin.backup.xml")
 
+val pluginLogoFile = projectDir.resolve("src/main/resources/META-INF/pluginIcon.svg")
+val pluginLogoFileBackup = projectDir.resolve("pluginIcon.backup.svg")
+val pluginLogoLifetimeFile = projectDir.resolve("misc/pluginIcon.lifetime.svg")
+val pluginLogoFreeFile = projectDir.resolve("misc/pluginIcon.free.svg")
+
 // Import variables from gradle.properties file
 val pluginDownloadIdeaSources: String by project
 val pluginVersion: String by project
@@ -88,9 +93,21 @@ dependencies {
 }
 
 intellij {
+    when (pluginLicenseType) {
+        "free" -> {
+            pluginName.set("Extra Icons Free")
+        }
+
+        "lifetime" -> {
+            pluginName.set("Extra Icons Lifetime")
+        }
+
+        else -> {
+            pluginName.set("Extra Icons")
+        }
+    }
     downloadSources.set(pluginDownloadIdeaSources.toBoolean() && !System.getenv().containsKey("CI"))
     instrumentCode.set(true)
-    pluginName.set("Extra Icons")
     sandboxDir.set("${rootProject.projectDir}/.idea-sandbox/${shortenIdeVersion(pluginIdeaVersion)}")
     updateSinceUntilBuild.set(false)
     version.set(pluginIdeaVersion)
@@ -129,6 +146,75 @@ tasks {
             if (pluginXmlStr.contains("//FREE_LIC//")) {
                 throw GradleException("plugin.xml: Product Descriptor is commented")
             }
+        }
+    }
+
+    register("updatePluginCompatibilityRulesFromPluginXml") {
+        doLast {
+            var pluginXmlStr = pluginXmlFile.readText()
+            when (pluginLicenseType) {
+                "free" -> {
+                    pluginXmlStr = pluginXmlStr.replace("<incompatible-with>REPLACED_BY_GRADLE</incompatible-with>",
+                        "<!-- none -->")
+                }
+
+                "lifetime" -> {
+                    pluginXmlStr = pluginXmlStr.replace("<incompatible-with>REPLACED_BY_GRADLE</incompatible-with>",
+                        "<incompatible-with>lermitage.extra.icons.free</incompatible-with>")
+                }
+
+                else -> {
+                    pluginXmlStr = pluginXmlStr.replace("<incompatible-with>REPLACED_BY_GRADLE</incompatible-with>",
+                        "<incompatible-with>lermitage.extra.icons.lifetime</incompatible-with>" +
+                            "<incompatible-with>lermitage.extra.icons.free</incompatible-with>")
+                }
+            }
+            FileUtils.delete(pluginXmlFile)
+            FileUtils.write(pluginXmlFile, pluginXmlStr, "UTF-8")
+        }
+    }
+
+    register("backupPluginLogo") {
+        doLast {
+            if (pluginLogoFileBackup.exists()) {
+                if (!pluginLogoFileBackup.delete()) {
+                    throw GradleException("Failed to remove existing plugin logo file backup '${pluginLogoFileBackup}'")
+                }
+            }
+            FileUtils.copyFile(pluginLogoFile, pluginLogoFileBackup)
+        }
+    }
+    register("restorePluginLogoFromBackup") {
+        doLast {
+            if (!pluginLogoFileBackup.exists()) {
+                throw GradleException("Plugin logo file backup '${pluginLogoFileBackup}' is missing")
+            }
+            if (pluginLogoFile.exists()) {
+                if (!pluginLogoFile.delete()) {
+                    throw GradleException("Failed to remove non-original plugin logo file backup '${pluginLogoFile}'")
+                }
+            }
+            FileUtils.moveFile(pluginLogoFileBackup, pluginLogoFile)
+        }
+    }
+    register("usePluginLogoFree") {
+        doLast {
+            if (pluginLogoFile.exists()) {
+                if (!pluginLogoFile.delete()) {
+                    throw GradleException("Failed to remove existing plugin logo file backup '${pluginLogoFile}'")
+                }
+            }
+            FileUtils.copyFile(pluginLogoFreeFile, pluginLogoFile)
+        }
+    }
+    register("usePluginLogoLifetime") {
+        doLast {
+            if (pluginLogoFile.exists()) {
+                if (!pluginLogoFile.delete()) {
+                    throw GradleException("Failed to remove existing plugin logo file backup '${pluginLogoFile}'")
+                }
+            }
+            FileUtils.copyFile(pluginLogoLifetimeFile, pluginLogoFile)
         }
     }
 
@@ -239,7 +325,6 @@ tasks {
     }
     withType<Test> {
         useJUnitPlatform()
-        maxParallelForks = Runtime.getRuntime().availableProcessors()
 
         // avoid JBUIScale "Must be precomputed" error, because IDE is not started (LoadingState.APP_STARTED.isOccurred is false)
         jvmArgs("-Djava.awt.headless=true")
@@ -307,15 +392,15 @@ tasks {
     patchPluginXml {
         when (pluginLicenseType) {
             "free" -> {
-                dependsOn("backupPluginXml", "removeLicenseRestrictionFromPluginXml")
+                dependsOn("backupPluginLogo", "usePluginLogoFree", "backupPluginXml", "removeLicenseRestrictionFromPluginXml", "updatePluginCompatibilityRulesFromPluginXml")
             }
 
             "lifetime" -> {
-                dependsOn("backupPluginXml", "renamePluginInfoToLifetimeInPluginXml", "verifyProductDescriptor")
+                dependsOn("backupPluginLogo", "usePluginLogoLifetime", "backupPluginXml", "renamePluginInfoToLifetimeInPluginXml", "updatePluginCompatibilityRulesFromPluginXml", "verifyProductDescriptor")
             }
 
             else -> {
-                dependsOn("verifyProductDescriptor")
+                dependsOn("backupPluginXml", "updatePluginCompatibilityRulesFromPluginXml", "verifyProductDescriptor")
             }
         }
         changeNotes.set(provider {
@@ -327,11 +412,15 @@ tasks {
     buildPlugin {
         when (pluginLicenseType) {
             "free" -> {
-                finalizedBy("restorePluginXmlFromBackup", "renameDistributionNoLicense")
+                finalizedBy("restorePluginLogoFromBackup", "restorePluginXmlFromBackup", "renameDistributionNoLicense")
             }
 
             "lifetime" -> {
-                finalizedBy("restorePluginXmlFromBackup", "renameDistributionLifetimeLicense")
+                finalizedBy("restorePluginLogoFromBackup", "restorePluginXmlFromBackup", "renameDistributionLifetimeLicense")
+            }
+
+            else -> {
+                finalizedBy("restorePluginXmlFromBackup")
             }
         }
     }

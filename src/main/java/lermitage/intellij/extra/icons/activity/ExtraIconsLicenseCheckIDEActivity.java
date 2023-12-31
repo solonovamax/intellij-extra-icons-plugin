@@ -27,7 +27,7 @@ import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 /**
- * Check licence periodically.
+ * Check Extra Icons licence periodically.
  */
 public class ExtraIconsLicenseCheckIDEActivity implements ProjectActivity {
 
@@ -48,13 +48,16 @@ public class ExtraIconsLicenseCheckIDEActivity implements ProjectActivity {
         started = true;
         LOGGER.info("Started Extra Icons license checker");
 
-        int check_delay_1 = 60_000; // 1 min
-        int check_delay_2 = 3_600_000; // 1 hr
-        int check_period = 3 * 3_600_000; // 3 hrs
+        int fiest_check_delay = 60_000; // 1 min
+        int second_check_delay = 3_600_000; // 1 hr
+        int other_checks_period = 3 * 3_600_000; // 3 hrs
         if ("true".equals(System.getProperty("extra.icons.license.check.fast", "false"))) {
-            check_delay_1 = 3_000; // 3 sec
-            check_delay_2 = 30_000; // 30 sec
-            check_period = 180_000; // 3 min
+            LOGGER.warn("Detected property extra.icons.license.check.fast = true, which will dramatically " +
+                "increase Extra Icons license check frequency. " +
+                "Reminder: you should enable this property for testing purpose only");
+            fiest_check_delay = 3_000; // 3 sec
+            second_check_delay = 30_000; // 30 sec
+            other_checks_period = 180_000; // 3 min
         }
 
         long t1 = System.currentTimeMillis();
@@ -65,11 +68,11 @@ public class ExtraIconsLicenseCheckIDEActivity implements ProjectActivity {
         if (installedPluginType.isRequiresLicense()) {
             try {
                 ExtraIconsLicenseStatus.setLicenseActivated(true);
-                LOGGER.info("Will check Extra Icons license in " + check_delay_1 / 1000 + " sec, " +
-                    "in " + check_delay_2 / 1000 + " sec, " +
-                    "then every " + check_period / 1000 + " sec");
-                new Timer().schedule(createLicenseCheckerTimerTask(installedPluginType), check_delay_1);
-                new Timer().scheduleAtFixedRate(createLicenseCheckerTimerTask(installedPluginType), check_delay_2, check_period);
+                LOGGER.info("Will check Extra Icons license in " + fiest_check_delay / 1000 + " sec, " +
+                    "in " + second_check_delay / 1000 + " sec, " +
+                    "then every " + other_checks_period / 1000 + " sec");
+                new Timer().schedule(createLicenseCheckerTimerTask(installedPluginType), fiest_check_delay);
+                new Timer().scheduleAtFixedRate(createLicenseCheckerTimerTask(installedPluginType), second_check_delay, other_checks_period);
             } catch (Exception e) {
                 LOGGER.warn(e);
             }
@@ -106,19 +109,19 @@ public class ExtraIconsLicenseCheckIDEActivity implements ProjectActivity {
 
     private ExtraIconsPluginType findInstalledPluginType() {
         PluginDescriptor pluginDesc = PluginManager.getPluginByClass(ExtraIconsLicenseCheckIDEActivity.class);
-        if (pluginDesc == null) {
+        if (pluginDesc == null) { // should never happen, as two plugins with same service class names will crash the IDE
             LOGGER.warn("Failed to find installed Extra Icons plugin by class, will list all installed plugins and try to find it");
             Set<String> registeredIds = PluginId.getRegisteredIds().stream()
                 .map(PluginId::getIdString)
                 .collect(Collectors.toSet());
-            Optional<ExtraIconsPluginType> extraIconsPluginTypeFound = ExtraIconsPluginType.FINDABLE_TYPES.stream()
+            Optional<ExtraIconsPluginType> extraIconsPluginTypeFound = ExtraIconsPluginType.getFindableTypes().stream()
                 .filter(extraIconsPluginType -> registeredIds.contains(extraIconsPluginType.getPluginId()))
                 .findFirst();
             return extraIconsPluginTypeFound.orElse(ExtraIconsPluginType.NOT_FOUND);
         } else {
             LOGGER.info("Found installed Extra Icons plugin by class: " + pluginDesc);
             String installedPluginId = pluginDesc.getPluginId().getIdString();
-            Optional<ExtraIconsPluginType> extraIconsPluginTypeFound = ExtraIconsPluginType.FINDABLE_TYPES.stream()
+            Optional<ExtraIconsPluginType> extraIconsPluginTypeFound = ExtraIconsPluginType.getFindableTypes().stream()
                 .filter(extraIconsPluginType -> installedPluginId.equals(extraIconsPluginType.getPluginId()))
                 .findFirst();
             return extraIconsPluginTypeFound.orElse(ExtraIconsPluginType.NOT_FOUND);
