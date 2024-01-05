@@ -18,14 +18,12 @@
         <li>For questions about the plugin licensing models, please see the <a href="https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md">license FAQ</a>.</li>
         <li>JetBrains <b>Gateway</b> support is limited. Gateway may fail to register licenses for third-party paid plugins (like Extra Icons), and it may not render some settings GUI forms correctly. Unfortunately, these issues are on the JetBrains side. Installing the plugin on the <i>host</i> and/or <i>client</i> sides can help. As a workaround for licensing issues, you can still build the plugin by yourself and remove the license requirement. The plugin is still free (MIT) and open source. I ask for a modest retribution only if you get the plugin from the marketplace, which, I think, is a good way to support my work. Thank you.</li>
       </ul>
-      📢 Starting from 2024, I will occasionally send some <a href="https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#i-received-a-coupon-for-a-free-license-how-does-it-work">coupons</a> for Free licenses on <a href="https://twitter.com/JLermitage">Twitter</a> and <a href="https://bsky.app/profile/jonathanlermitage.bsky.social">Bluesky</a>. Stay tuned.
-      <br><br>
       📢 If you want to speed up the resolution of a few problems on JetBrains side affecting this plugin, or help plugin developers, please consider up-voting these YouTrack issues:
       <ul>
-        <li><a href="https://youtrack.jetbrains.com/issue/IDEA-247819"><b>IDEA-247819</b></a>: IntelliJ does not allow folder icons override in Packages View. This issue has been submitted 3 years ago (Aug 2020), it definitively needs more visibility.</li>
-        <li><a href="https://youtrack.jetbrains.com/issue/IDEA-339254"><b>IDEA-339254</b></a>: IntelliJ shows default Class icon for Java Exceptions until you modify them. You have to modify Java Exception files to see the corresponding Exception icon.</li>
-        <li><a href="https://youtrack.jetbrains.com/issue/RIDER-101621"><b>RIDER-101621</b></a>: a Rider IDE issue affecting folder icons override.</li>
-        <li><a href="https://youtrack.jetbrains.com/issue/MP-4248"><b>MP-4248</b></a> and <a href="https://youtrack.jetbrains.com/issue/MP-5648"><b>MP-5648</b></a>: marketplace moderation problems.</li>
+        <li><a href="https://youtrack.jetbrains.com/issue/IDEA-247819">IDEA-247819</a>: IntelliJ does not allow folder icons override in Packages View. This issue has been submitted 3 years ago (Aug 2020), it definitively needs more visibility.</li>
+        <li><a href="https://youtrack.jetbrains.com/issue/IDEA-339254">IDEA-339254</a>: IntelliJ shows default Class icon for Java Exceptions until you modify them. You have to modify Java Exception files to see the corresponding Exception icon.</li>
+        <li><a href="https://youtrack.jetbrains.com/issue/RIDER-101621">RIDER-101621</a>: a Rider IDE issue affecting folder icons override.</li>
+        <li><a href="https://youtrack.jetbrains.com/issue/MP-4248">MP-4248</a> and <a href="https://youtrack.jetbrains.com/issue/MP-5648">MP-5648</a>: marketplace moderation problems.</li>
       </ul>
       Thank you!
       <br>
