@@ -2,6 +2,7 @@
 
 ## 2024.1.2 (WIP)
 * optimize icons size by ~3% with SVGO 3.2.0.
+* fix [#176](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/176): clicking 'Go to Extra Icons settings' from the notification just throws an error.
 
 ## 2024.1.1 (2024/01/02)
 * **INFO**: JetBrains will introduce a new business model for paid/freemium plugins. This model will offer a perpetual license, **allowing users to make a one-time payment for the plugin and use it for a lifetime**. [Get more information here](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/docs/LICENSE_FAQ.md#how-to-get-a-lifetime-license). There is no ETA yet.

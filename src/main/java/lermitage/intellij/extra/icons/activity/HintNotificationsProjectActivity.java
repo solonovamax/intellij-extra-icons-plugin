@@ -2,12 +2,12 @@
 
 package lermitage.intellij.extra.icons.activity;
 
-import com.intellij.ide.BrowserUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationAction;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.ProjectActivity;
@@ -20,6 +20,8 @@ import lermitage.intellij.extra.icons.cfg.services.SettingsIDEService;
 import lermitage.intellij.extra.icons.messaging.RefreshIconsNotifierService;
 import lermitage.intellij.extra.icons.utils.I18nUtils;
 import lermitage.intellij.extra.icons.utils.IJUtils;
+import lermitage.intellij.extra.icons.utils.ProjectUtils;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,11 +33,17 @@ import java.util.ResourceBundle;
  */
 public class HintNotificationsProjectActivity implements ProjectActivity {
 
+    private static final @NonNls Logger LOGGER = Logger.getInstance(HintNotificationsProjectActivity.class);
+
     private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
 
     @Nullable
     @Override
     public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
+        if (!ProjectUtils.isProjectAlive(project)) {
+            LOGGER.info(this.getClass().getName() + " started before project is ready. Will not show startup notifications this time");
+            return null;
+        }
         SettingsIDEService settingsIDEService = SettingsIDEService.getInstance();
 
         boolean alwaysShowNotifications = System.getProperty("extra-icons.always.show.notifications", "false").equals("true"); //NON-NLS
