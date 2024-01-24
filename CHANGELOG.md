@@ -1,8 +1,14 @@
 # Extra Icons Change Log
 
-## 2024.2.3 (planned for 2024/02/24)
+## 2024.3.1 (planned for 2024/02/24)
+* fix compatibility with future builds of IntelliJ 2024.1 based IDEs.
+* minor performance improvements and improve code quality.
 * support `CODE_OF_CONDUCT` files (with `.md`, `.adoc`, `.txt`, `.rst` or no extension).
+* support some [Typos](https://github.com/crate-ci/typos/blob/master/docs/reference.md#sources) config files.
 * don't throw an IDE error when failed to import/export/uninstall a user icon pack. Show a standard IntelliJ error dialog instead.
+* move the list of known issues and workarounds and fixes to [online doc](https://plugins.jetbrains.com/plugin/11058-extra-icons/known-issues).
+* plugin description: fix link to Gateway support online documentation.
+* hints and notifications now display Extra Icons' logo.
 * internal: replace some custom dialogs by standard IntelliJ dialogs.
 * internal: code refactorings, improve stability and maintainability.
 * internal: improvements to the plugin build script.
@@ -878,7 +884,7 @@ Thx [Florian Böhm](https://github.com/jonathanlermitage/intellij-extra-icons-pl
   * odd minor revision number (0.19, 0.21, 1.1, 1.3...): compatible with 173.0 IDE builds (aka 2017.3). This build doesn't bundle features that need 2018.3 IDE builds: AngularJS, SASS, Javascript. They're excluded because Extra Icons plugin reads project's type in order to activate some file recognition (AngularJS, SASS, Javascrip): it is based on 2018.3 IDE features. Other files detection is simply based on files pattern, that's why it works with older IDE builds, and I will maintain a branch (`ide173`) to keep support.
   * even minor revision number (0.20, 0.22, 1.0, 1.2...): compatible with latest IDE builds (183.0, aka 2018.3).
   
-This way, you simply have to download the latest version offered by the plugin manager: on older IDE, you'll get the latest odd minor revision number. On recent IDE, you get the latest even minor revision number that sheeps same features as odd version, plus features that comes with recent IDE builds.
+This way, you simply have to download the latest version offered by the plugin manager: on older IDE, you'll get the latest odd minor revision number. On recent IDE, you get the latest even minor revision number that ships same features as odd version, plus features that comes with recent IDE builds.
 
 ## 0.18 (2018/12/10)
 * plugin is no more compatible with 173.0 IDE builds: minimum version is now 183.0 (2018.3).
