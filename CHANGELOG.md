@@ -2,8 +2,10 @@
 
 ## 2024.3.1 (planned for 2024/02/24)
 * fix compatibility with future builds of IntelliJ 2024.1 based IDEs.
+* reduce usage of deprecated IntelliJ's API, and raise minimum IDE version to 2023.2 (from 2023.1).
 * minor performance improvements and improve code quality.
 * support `CODE_OF_CONDUCT` files (with `.md`, `.adoc`, `.txt`, `.rst` or no extension).
+* support Qodana `qodana.yml` files.
 * support some [Typos](https://github.com/crate-ci/typos/blob/master/docs/reference.md#sources) config files.
 * don't throw an IDE error when failed to import/export/uninstall a user icon pack. Show a standard IntelliJ error dialog instead.
 * move the list of known issues and workarounds and fixes to [online doc](https://plugins.jetbrains.com/plugin/11058-extra-icons/known-issues).
