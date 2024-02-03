@@ -9,9 +9,9 @@
     <a href="https://plugins.jetbrains.com/plugin/11058-extra-icons"><img alt="plugin's downloads" src="https://img.shields.io/jetbrains/plugin/d/11058-extra-icons.svg"/></a>
 </p>
 
-:warning: **2024-01-08 update**: Some people decided to distribute my plugin with license requirement removed, without having the decency to tell me about it. No acknowledgement, simply a total lack of respect, while I allowed users to support me financially only if they wished to. I am working hard on this plugin since 2018, allowing users to explore the code and optionally support my work. So I had to make the difficult decision to stop distributing the source code. I give up, because I'm simply exhausted and disgusted by this kind of attitude. I will continue to work on this project with a private repository, and my future projects won't be open-source anymore. Please note that my other 7 free plugins will remain free and open-source forever.  
-You can still access old code's history and build the plugin for free. Look at the Makefile for instructions.  
-**You can still open issues and discussions**. :warning:
+:warning: **2024-01-08 update**: Extra Icons is no longer open-source. Please see the [license faq](https://plugins.jetbrains.com/plugin/11058-extra-icons/license-faq) for details. :warning:    
+You can still access old code's history and build the plugin for free.  
+**You can still open issues and discussions**.
 
 ---
 
