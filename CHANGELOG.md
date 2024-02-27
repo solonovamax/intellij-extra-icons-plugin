@@ -1,5 +1,22 @@
 # Extra Icons Change Log
 
+## 2024.3.5 (WIP)
+* override Java Record icon (offer new colors).
+* fix usage of some JetBrains deprecated APIs.
+
+## 2024.3.4 (2024/04/03)
+* fix [#182](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/182) `java.lang.Throwable: Must be precomputed` error.
+
+## 2024.3.3 (2024/03/19)
+* support Doxygen `Doxyfile` files.
+* **Important**: Starting from April 15th, 2024, I will increase the Extra Icons plugin's subscription price (€&nbsp;1.50&nbsp;/1st year, €&nbsp;1.20&nbsp;/2nd&nbsp;year, €&nbsp;0.90&nbsp;/3rd year onwards for monthly subscriptions, and €&nbsp;15/12/9 for annual subscriptions). **If you have enabled automatic license renewal, JetBrains will email you one week before the renewal**.<br>You can still cancel your automatic license renewal if you want, at any time.<br>I wanted to update the subscription price in order to reflect the amount of work I am dedicating to this project.<br>Perpetual fallback licenses are still available and, the day JetBrains allows plugins developers to sell lifetime licenses, I will be ready.
+
+## 2024.3.2 (2024/03/02)
+* lower minimum IDE version to 2023.1 (from 2023.2). It will also restore compatibility with the current stable release of Android Studio: Hedgehog. I will raise minimum IDE version to 2023.2 later, when the related deprecated used JetBrains API is removed. There's no impact on stability and performance.
+* support some potential [Kotlin Multiplatform](https://kmp.jetbrains.com/) folders: `composeApp/src/androidMain`, `composeApp/src/commonMain`, `composeApp/src/desktopMain`, `composeApp/src/iosMain`, `iosMain`.
+* support some potential [Fleet plugin](https://github.com/JetBrains/fleet-plugin-template) folders: `fleet-plugin`, `fleet-plugin/backendImpl`, `fleet-plugin/commonImpl`, `fleet-plugin/frontendImpl`, `fleet-plugin/workspaceImpl`.
+* minor performance optimization: reduce threads spawning by using IDE thread pool and scheduler instead of starting new threads for scheduled tasks.
+
 ## 2024.3.1 (2024/02/21)
 * fix compatibility with future builds of IntelliJ 2024.1 based IDEs.
 * reduce usage of deprecated IntelliJ's API, and raise minimum IDE version to 2023.2 (from 2023.1).
