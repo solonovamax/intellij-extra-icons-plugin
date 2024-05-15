@@ -1,7 +1,8 @@
 # Extra Icons Change Log
 
-## 2024.3.5 (WIP)
+## 2024.4.1 (WIP)
 * override Java Record icon (offer new colors).
+* fix a case where user icons were loaded after bundled icons. User icons should always have the highest priority.
 * fix usage of some JetBrains deprecated APIs.
 * minor performance improvement when loading plugin.
 
