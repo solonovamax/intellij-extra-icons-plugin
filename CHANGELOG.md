@@ -3,6 +3,7 @@
 ## 2024.3.5 (WIP)
 * override Java Record icon (offer new colors).
 * fix usage of some JetBrains deprecated APIs.
+* minor performance improvement when loading plugin.
 
 ## 2024.3.4 (2024/04/03)
 * fix [#182](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/182) `java.lang.Throwable: Must be precomputed` error.
