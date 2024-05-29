@@ -2,7 +2,7 @@
 
 ## 2024.4.2 (2024/05/24)
 * minor code rework.
-* suppress the notification about the new subscription price update
+* suppress the notification about the new subscription price update.
 * internal: migrate to IntelliJ Platform Gradle Plugin v2, ensuring build compatibility with 2024.2+ IDEs.
 
 ## 2024.4.1 (2024/05/15)
