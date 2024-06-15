@@ -1,6 +1,6 @@
 # Extra Icons Change Log
 
-## 2024.4.3 (WIP)
+## 2024.5.1 (2024/06/15)
 * replace the plugin's custom error reporter by the new IDE [Exception Analyzer](https://plugins.jetbrains.com/docs/marketplace/exception-analyzer.html). This is an easy way to report plugin exceptions from IntelliJ Platform-based products to plugin developers right on JetBrains Marketplace, instead of opening an issue on the plugin's GitHub repository.
 
 ## 2024.4.2 (2024/05/24)
