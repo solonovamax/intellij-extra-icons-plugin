@@ -1,6 +1,6 @@
 # Extra Icons Change Log
 
-## 2024.6.1 (WIP)
+## 2024.6.1 (2024/06/26)
 * partially implement [IDEA-352785](https://youtrack.jetbrains.com/issue/IDEA-352785): provide icons for Kotlin classes, interfaces, enums, etc., without the small "K" badge.
 
 ## 2024.5.2 (2024/06/21)
