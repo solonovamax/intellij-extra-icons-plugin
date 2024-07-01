@@ -3,7 +3,7 @@
 ## 2024.6.2 (WIP)
 * minor performance improvements and enable future performance improvements for 2024+ IDEs (based on JBR21).
 * general stability improvements. Some internal concurrent components were not ideally synchronized, which could lead to minor performance degradations. This is now fixed.
-* support [Vale](https://vale.sh) `.vale.ini` files
+* support [Vale](https://vale.sh) `.vale.ini` files.
 
 ## 2024.6.1 (2024/06/26)
 * partially implement [IDEA-352785](https://youtrack.jetbrains.com/issue/IDEA-352785): provide icons for Kotlin classes, interfaces, enums, etc., without the small "K" badge.
