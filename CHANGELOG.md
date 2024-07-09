@@ -1,6 +1,6 @@
 # Extra Icons Change Log
 
-## 2024.6.2 (WIP)
+## 2024.6.2 (2024/07/08)
 * minor performance improvements and enable future performance improvements for 2024+ IDEs (based on JBR21).
 * general stability improvements. Some internal concurrent components were not ideally synchronized, which could lead to minor performance degradations. This is now fixed.
 * support [Vale](https://vale.sh) `.vale.ini` files.
