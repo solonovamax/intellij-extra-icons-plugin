@@ -1,6 +1,7 @@
 # Extra Icons Change Log
 
 ## 2024.6.3 (WIP)
+* UI improvement (for non-EAP IDEs only): use IDE's file chooser dialog instead of the regular Swing file chooser dialog.
 * minor performance improvements.
 
 ## 2024.6.2 (2024/07/08)
