@@ -2,7 +2,7 @@
 
 ## 2024.6.4 (WIP)
 * support `.gitea` folders and `*.yml` files in `workflows` subdirectories.
-* fix [#183](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/183): custom icons should not apply to files and folders only, not to class members like properties, methods and nested classes.
+* fix [#183](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/183): custom icons should apply to files and folders only, not to class members like properties, methods and nested classes.
 * fix [#185](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/185): `requirements.txt` should have a custom icon in PyCharm.
 
 ## 2024.6.3 (2024/07/21)
