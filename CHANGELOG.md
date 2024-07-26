@@ -1,5 +1,9 @@
 # Extra Icons Change Log
 
+## 2024.6.4 (WIP)
+* support `.gitea` folders and `*.yml` files in `workflows` subdirectories.
+* fix [#183](https://github.com/jonathanlermitage/intellij-extra-icons-plugin/issues/183): custom icons should not apply to files and folders only, not to class members like properties, methods and nested classes.
+
 ## 2024.6.3 (2024/07/21)
 * UI improvement (for non-EAP IDEs only): use IDE's file chooser dialog instead of the regular Swing file chooser dialog.
 * minor performance improvements.
