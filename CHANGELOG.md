@@ -89,7 +89,7 @@
 * add the new alternative GitLab "next" orange icon for `.gitlab-ci.yml` files.
 * rework GitLab folder icon.
 * rework Privacy icon.
-* support `(.)log(s)` folders.
+* support `(.)log(s)`folders.
 * support `.noai` files (which tell the AI Assistant plugin to block AI features for the containing project).
 * support [Detekt](https://detekt.dev/docs/introduction/configurations/) files ending by `detekt-config.yml` or `detekt.yml` (I may try to pick the configured Detekt filename from the `build.gradle(.kts)` file later).
 * support Qodana `qodana.yaml` files.
