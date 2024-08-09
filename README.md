@@ -1,3 +1,11 @@
+# Fork
+
+This project is a fork of [IntelliJ Extra Icons Plugin](https://github.com/jonathanlermitage/intellij-extra-icons-plugin), reverting the commit c0677c9.
+
+The original README is provided below.
+
+---
+
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine/)
 
 <h1 align="center">
@@ -19,12 +27,12 @@ You can also register your own icons in order to override file icons, but also a
 To get started with this plugin, please see this [guide](docs/GET_STARTED.md).
 
 1. [Download](#download)
-2. [Build](#build)  
-3. [Contribution](#how-to-contribute)  
-4. [Known issues](#known-issues)  
-5. [License](#license)  
-6. [Credits](#contributors)  
-7. [Screenshots](#screenshots)  
+2. [Build](#build)
+3. [Contribution](#how-to-contribute)
+4. [Known issues](#known-issues)
+5. [License](#license)
+6. [Credits](#contributors)
+7. [Screenshots](#screenshots)
 
 ## Download
 
