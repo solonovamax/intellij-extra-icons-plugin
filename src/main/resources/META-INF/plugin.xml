@@ -1,11 +1,8 @@
 <idea-plugin require-restart="true">
-    <id>lermitage.intellij.extra.icons</id>
-    <name>Extra Icons</name>
+    <id>lermitage.intellij.extra.icons.oss</id>
+    <name>Extra Icons OSS</name>
     <version>REPLACED_BY_GRADLE</version>
     <vendor email="jonathan@lermitage.biz" url="https://github.com/jonathanlermitage">JONATHAN_LERMITAGE</vendor>
-    <!-- required parameters for paid plugins: https://plugins.jetbrains.com/docs/marketplace/add-required-parameters.html -->
-    <!-- IMPORTANT reminder: change the release-date and release-version on major version changes only -->
-    <product-descriptor code="PEXTRAICONS" release-date="20240102" release-version="20241"/>
 
     <description><![CDATA[
       <ul>
@@ -53,7 +50,9 @@
     <depends>com.intellij.modules.platform</depends>
 
     <!-- https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html#incompatible-with -->
-    <incompatible-with>REPLACED_BY_GRADLE</incompatible-with>
+    <incompatible-with>lermitage.extra.icons</incompatible-with>
+    <incompatible-with>lermitage.extra.icons.free</incompatible-with>
+    <incompatible-with>lermitage.extra.icons.lifetime</incompatible-with>
 
     <!-- Icon Patchers override file icon by icon name -->
     <!--suppress PluginXmlDynamicPlugin --> <!-- PluginXmlDynamicPlugin suppressed because plugin already has 'require-restart="true"' -->

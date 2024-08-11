@@ -6,6 +6,7 @@ import com.palantir.gradle.gitversion.VersionDetails
 import groovy.lang.Closure
 import org.apache.commons.io.FileUtils
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.w3c.dom.Document
 import java.io.BufferedReader
 import java.io.ByteArrayInputStream
@@ -19,7 +20,7 @@ import javax.xml.xpath.XPathFactory
 
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.16.1" // https://github.com/JetBrains/gradle-intellij-plugin
+    id("org.jetbrains.intellij.platform") version "2.0.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.changelog") version "2.2.0" // https://github.com/JetBrains/gradle-changelog-plugin
     id("com.github.ben-manes.versions") version "0.50.0" // https://github.com/ben-manes/gradle-versions-plugin
     id("com.adarshr.test-logger") version "4.0.0" // https://github.com/radarsh/gradle-test-logger-plugin
@@ -28,6 +29,7 @@ plugins {
     id("biz.lermitage.oga") version "1.1.1" // https://github.com/jonathanlermitage/oga-gradle-plugin
 }
 
+// TODO: Make this buildscript significantly less awful
 val pluginXmlFile = projectDir.resolve("src/main/resources/META-INF/plugin.xml")
 val pluginXmlFileBackup = projectDir.resolve("plugin.backup.xml")
 
@@ -41,17 +43,12 @@ val pluginDownloadIdeaSources: String by project
 val pluginVersion: String by project
 val pluginJavaVersion: String by project
 val testLoggerStyle: String by project
-val pluginLicenseType: String by project
 val pluginLanguage: String by project
 val pluginCountry: String by project
 val pluginEnableDebugLogs: String by project
 val pluginEnforceIdeSlowOperationsAssertion: String by project
 val pluginClearSandboxedIDESystemLogsBeforeRun: String by project
 val pluginIdeaVersion = detectBestIdeVersion()
-val pluginLifetimeLicenseDescriptionHeader: String by project
-val pluginLifetimeLicenseId: String by project
-val pluginLifetimeLicenseCode: String by project
-val pluginLifetimeLicenseName: String by project
 val pluginFreeId: String by project
 val pluginFreeName: String by project
 
@@ -73,6 +70,10 @@ group = "lermitage.intellij.extra.icons"
 
 repositories {
     mavenCentral()
+
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 val junitVersion = "5.10.1"
@@ -90,27 +91,23 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitPlatformLauncher")
     testImplementation("com.tngtech.archunit:archunit:$archunitVersion")
     testImplementation("com.github.weisj:jsvg:1.3.0")
+
+    intellijPlatform {
+        intellijIdeaCommunity(pluginIdeaVersion)
+
+        instrumentationTools()
+        pluginVerifier()
+        zipSigner()
+        testFramework(TestFrameworkType.Platform)
+    }
 }
 
-intellij {
-    when (pluginLicenseType) {
-        "free" -> {
-            pluginName.set("Extra Icons Free")
-        }
-
-        "lifetime" -> {
-            pluginName.set("Extra Icons Lifetime")
-        }
-
-        else -> {
-            pluginName.set("Extra Icons")
-        }
+intellijPlatform {
+    pluginConfiguration {
+        name = "Extra Icons OSS"
     }
-    downloadSources.set(pluginDownloadIdeaSources.toBoolean() && !System.getenv().containsKey("CI"))
-    instrumentCode.set(true)
-    sandboxDir.set("${rootProject.projectDir}/.idea-sandbox/${shortenIdeVersion(pluginIdeaVersion)}")
-    updateSinceUntilBuild.set(false)
-    version.set(pluginIdeaVersion)
+    instrumentCode = true
+    sandboxContainer = file("${rootProject.projectDir}/.idea-sandbox/${shortenIdeVersion(pluginIdeaVersion)}")
 }
 
 changelog {
@@ -129,51 +126,12 @@ testlogger {
         theme = ThemeType.valueOf(testLoggerStyle)
     } catch (e: Exception) {
         theme = ThemeType.PLAIN
-        logger.warn("Invalid testLoggerRichStyle value '$testLoggerStyle', " +
-            "will use PLAIN style instead. Accepted values are PLAIN, STANDARD and MOCHA.")
+        logger.warn("Invalid testLoggerRichStyle value '$testLoggerStyle', will use PLAIN style instead. Accepted values are PLAIN, STANDARD and MOCHA.")
     }
     showSimpleNames = true
 }
 
 tasks {
-    register("verifyProductDescriptor") {
-        // Ensure generated plugin requires a paid license
-        doLast {
-            val pluginXmlStr = pluginXmlFile.readText()
-            if (!pluginXmlStr.contains("<product-descriptor")) {
-                throw GradleException("plugin.xml: Product Descriptor is missing")
-            }
-            if (pluginXmlStr.contains("//FREE_LIC//")) {
-                throw GradleException("plugin.xml: Product Descriptor is commented")
-            }
-        }
-    }
-
-    register("updatePluginCompatibilityRulesFromPluginXml") {
-        doLast {
-            var pluginXmlStr = pluginXmlFile.readText()
-            when (pluginLicenseType) {
-                "free" -> {
-                    pluginXmlStr = pluginXmlStr.replace("<incompatible-with>REPLACED_BY_GRADLE</incompatible-with>",
-                        "<!-- none -->")
-                }
-
-                "lifetime" -> {
-                    pluginXmlStr = pluginXmlStr.replace("<incompatible-with>REPLACED_BY_GRADLE</incompatible-with>",
-                        "<incompatible-with>lermitage.extra.icons.free</incompatible-with>")
-                }
-
-                else -> {
-                    pluginXmlStr = pluginXmlStr.replace("<incompatible-with>REPLACED_BY_GRADLE</incompatible-with>",
-                        "<incompatible-with>lermitage.extra.icons.lifetime</incompatible-with>" +
-                            "<incompatible-with>lermitage.extra.icons.free</incompatible-with>")
-                }
-            }
-            FileUtils.delete(pluginXmlFile)
-            FileUtils.write(pluginXmlFile, pluginXmlStr, "UTF-8")
-        }
-    }
-
     register("backupPluginLogo") {
         doLast {
             if (pluginLogoFileBackup.exists()) {
@@ -207,16 +165,6 @@ tasks {
             FileUtils.copyFile(pluginLogoFreeFile, pluginLogoFile)
         }
     }
-    register("usePluginLogoLifetime") {
-        doLast {
-            if (pluginLogoFile.exists()) {
-                if (!pluginLogoFile.delete()) {
-                    throw GradleException("Failed to remove existing plugin logo file backup '${pluginLogoFile}'")
-                }
-            }
-            FileUtils.copyFile(pluginLogoLifetimeFile, pluginLogoFile)
-        }
-    }
 
     register("backupPluginXml") {
         doLast {
@@ -242,64 +190,14 @@ tasks {
         }
     }
 
-    register("removeLicenseRestrictionFromPluginXml") {
-        // Remove paid license requirement
-        doLast {
-            logger.warn("----------------------------------------------------------------")
-            logger.warn("/!\\ Will build a plugin which doesn't ask for a paid license /!\\")
-            logger.warn("----------------------------------------------------------------")
-            var pluginXmlStr = pluginXmlFile.readText()
-            pluginXmlStr = pluginXmlStr.replace("<id>lermitage.intellij.extra.icons</id>", "<id>${pluginFreeId}</id>")
-            pluginXmlStr = pluginXmlStr.replace("<name>Extra Icons</name>", "<name>${pluginFreeName}</name>")
-            val paidLicenceBlockRegex = "<product-descriptor code=\"\\w+\" release-date=\"\\d+\" release-version=\"\\d+\"/>".toRegex()
-            val paidLicenceBlockStr = paidLicenceBlockRegex.find(pluginXmlStr)!!.value
-            pluginXmlStr = pluginXmlStr.replace(paidLicenceBlockStr, "<!-- LICENSE REMOVED -->")
-            FileUtils.delete(pluginXmlFile)
-            FileUtils.write(pluginXmlFile, pluginXmlStr, "UTF-8")
-        }
-    }
-    register("renameDistributionNoLicense") {
-        // Rename generated plugin file to mention the fact that no paid license is needed
-        doLast {
-            val baseName = "build/distributions/Extra Icons-$version"
-            val noLicPluginFile = projectDir.resolve("${baseName}-no-license.zip")
-            val originalPluginFile = projectDir.resolve("${baseName}.zip")
-            noLicPluginFile.delete()
-            if (originalPluginFile.exists()) {
-                FileUtils.moveFile(projectDir.resolve("${baseName}.zip"), noLicPluginFile)
-            }
-        }
-    }
-
-    register("renamePluginInfoToLifetimeInPluginXml") {
-        doLast {
-            var pluginXmlStr = pluginXmlFile.readText()
-            pluginXmlStr = pluginXmlStr.replace("<id>lermitage.intellij.extra.icons</id>", "<id>$pluginLifetimeLicenseId</id>")
-            pluginXmlStr = pluginXmlStr.replace("<name>Extra Icons</name>", "<name>$pluginLifetimeLicenseName</name>")
-            pluginXmlStr = pluginXmlStr.replace("<product-descriptor code=\"PEXTRAICONS\"", "<product-descriptor code=\"$pluginLifetimeLicenseCode\"")
-            pluginXmlStr = pluginXmlStr.replace("<description><![CDATA[", "<description><![CDATA[$pluginLifetimeLicenseDescriptionHeader")
-            FileUtils.delete(pluginXmlFile)
-            FileUtils.write(pluginXmlFile, pluginXmlStr, "UTF-8")
-        }
-    }
-    register("renameDistributionLifetimeLicense") {
-        doLast {
-            val baseName = "build/distributions/Extra Icons-$version"
-            val noLicPluginFile = projectDir.resolve("${baseName}-lifetime.zip")
-            val originalPluginFile = projectDir.resolve("${baseName}.zip")
-            noLicPluginFile.delete()
-            if (originalPluginFile.exists()) {
-                FileUtils.moveFile(projectDir.resolve("${baseName}.zip"), noLicPluginFile)
-            }
-        }
-    }
-
     register("showGeneratedPlugin") {
         doLast {
-            logger.quiet("--------------------------------------------------\n" +
-                "Generated: " + projectDir.resolve("build/distributions/").list().contentToString()
-                .replace("[", "").replace("]", " ").trim()
-                + "\n--------------------------------------------------")
+            logger.quiet(
+                "--------------------------------------------------\n" +
+                        "Generated: " + projectDir.resolve("build/distributions/").list().contentToString()
+                    .replace("[", "").replace("]", " ").trim()
+                        + "\n--------------------------------------------------"
+            )
         }
     }
     register("clearSandboxedIDESystemLogs") {
@@ -349,38 +247,29 @@ tasks {
                 .write(System.out, this)
         }
     }
+
     runIde {
         dependsOn("clearSandboxedIDESystemLogs")
 
         maxHeapSize = "1g" // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.JavaExec.html
 
-        if (pluginLanguage.isNotBlank()) {
+        if (pluginLanguage.isNotBlank())
             jvmArgs("-Duser.language=$pluginLanguage")
-        }
-        if (pluginCountry.isNotBlank()) {
+        if (pluginCountry.isNotBlank())
             jvmArgs("-Duser.country=$pluginCountry")
-        }
-        if (System.getProperty("extra-icons.enable.chinese.ui", "false") == "true") {
-            // force Chinese UI in plugin
+        if (System.getProperty("extra-icons.enable.chinese.ui", "false") == "true") // force Chinese UI in plugin
             jvmArgs("-Dextra-icons.enable.chinese.ui=true")
-        }
-        if (System.getProperty("extra-icons.always.show.notifications", "false") == "true") {
-            // show notifications on startup
+        if (System.getProperty("extra-icons.always.show.notifications", "false") == "true") // show notifications on startup
             jvmArgs("-Dextra-icons.always.show.notifications=true")
-        }
 
         // force detection of slow operations in EDT when playing with sandboxed IDE (SlowOperations.assertSlowOperationsAreAllowed)
-        if (pluginEnforceIdeSlowOperationsAssertion.toBoolean()) {
+        if (pluginEnforceIdeSlowOperationsAssertion.toBoolean())
             jvmArgs("-Dide.slow.operations.assertion=true")
-        }
 
-        if (pluginEnableDebugLogs.toBoolean()) {
-            systemProperties(
-                "idea.log.debug.categories" to "#lermitage.intellij.extra.icons"
-            )
-        }
+        if (pluginEnableDebugLogs.toBoolean())
+            systemProperties("idea.log.debug.categories" to "#lermitage.intellij.extra.icons")
 
-        autoReloadPlugins.set(false)
+        autoReload = true
 
         // If any warning or error with missing --add-opens, wait for the next gradle-intellij-plugin's update that should sync
         // with https://raw.githubusercontent.com/JetBrains/intellij-community/master/plugins/devkit/devkit-core/src/run/OpenedPackages.txt
@@ -390,19 +279,12 @@ tasks {
         enabled = false
     }
     patchPluginXml {
-        when (pluginLicenseType) {
-            "free" -> {
-                dependsOn("backupPluginLogo", "usePluginLogoFree", "backupPluginXml", "removeLicenseRestrictionFromPluginXml", "updatePluginCompatibilityRulesFromPluginXml")
-            }
+        dependsOn(
+            "backupPluginLogo",
+            "usePluginLogoFree",
+            "backupPluginXml",
+        )
 
-            "lifetime" -> {
-                dependsOn("backupPluginLogo", "usePluginLogoLifetime", "backupPluginXml", "renamePluginInfoToLifetimeInPluginXml", "updatePluginCompatibilityRulesFromPluginXml", "verifyProductDescriptor")
-            }
-
-            else -> {
-                dependsOn("backupPluginXml", "updatePluginCompatibilityRulesFromPluginXml", "verifyProductDescriptor")
-            }
-        }
         changeNotes.set(provider {
             with(changelog) {
                 renderItem(getLatest(), Changelog.OutputType.HTML)
@@ -410,19 +292,7 @@ tasks {
         })
     }
     buildPlugin {
-        when (pluginLicenseType) {
-            "free" -> {
-                finalizedBy("restorePluginLogoFromBackup", "restorePluginXmlFromBackup", "renameDistributionNoLicense")
-            }
-
-            "lifetime" -> {
-                finalizedBy("restorePluginLogoFromBackup", "restorePluginXmlFromBackup", "renameDistributionLifetimeLicense")
-            }
-
-            else -> {
-                finalizedBy("restorePluginXmlFromBackup")
-            }
-        }
+        finalizedBy("restorePluginLogoFromBackup", "restorePluginXmlFromBackup")
     }
     publishPlugin {
         token.set(System.getenv("JLE_IJ_PLUGINS_PUBLISH_TOKEN"))
@@ -528,10 +398,10 @@ fun readRemoteContent(url: URL): String {
 fun detectBestIdeVersion(): String {
     val pluginIdeaVersionFromProps = project.findProperty("pluginIdeaVersion")
     if (pluginIdeaVersionFromProps.toString() == "IC-LATEST-STABLE") {
-        return "IC-${findLatestStableIdeVersion()}"
+        return findLatestStableIdeVersion()
     }
     if (pluginIdeaVersionFromProps.toString() == "IU-LATEST-STABLE") {
-        return "IU-${findLatestStableIdeVersion()}"
+        return findLatestStableIdeVersion()
     }
     return pluginIdeaVersionFromProps.toString()
 }
