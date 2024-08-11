@@ -6,9 +6,9 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.IconPathPatcher;
 import com.intellij.ui.NewUI;
+import com.intellij.util.system.OS;
 import lermitage.intellij.extra.icons.cfg.services.SettingsIDEService;
 import lermitage.intellij.extra.icons.utils.IconUtils;
-import lermitage.intellij.extra.icons.utils.OS;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,12 +26,10 @@ import static lermitage.intellij.extra.icons.utils.Base64Utils.B64_DECODER;
 public class ExtraIconPatcher extends IconPathPatcher {
 
     private static final @NonNls Logger LOGGER = Logger.getInstance(ExtraIconPatcher.class);
-    private static final OS detectedOS = OS.detectOS();
 
     private Map<String, String> icons;
 
-    @NotNull
-    public static Map<String, String> getEnabledIcons() {
+    public static @NotNull Map<String, String> getEnabledIcons() {
         final UIType uiType = NewUI.isEnabled() ? UIType.NEW_UI : UIType.OLD_UI;
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Detected UI Type: " + uiType);
@@ -73,7 +71,7 @@ public class ExtraIconPatcher extends IconPathPatcher {
 
     @Override
     public @Nullable String patchPath(@NotNull String path, @Nullable ClassLoader classLoader) {
-        if (icons == null) {
+        if (this.icons == null) {
             loadConfig();
         }
 
@@ -96,13 +94,13 @@ public class ExtraIconPatcher extends IconPathPatcher {
     }
 
     private void loadConfig() {
-        icons = getEnabledIcons();
+        this.icons = getEnabledIcons();
         try {
-            icons = convertUserB64IconsToLocalFilesAndKeepBundledIcons(icons);
+            this.icons = convertUserB64IconsToLocalFilesAndKeepBundledIcons(this.icons);
         } catch (IOException e) {
             LOGGER.warn("Cannot create temporary directory to store user IDE icons, this feature won't work", e);
         }
-        LOGGER.info("Config loaded with success, enabled " + icons.size() + " items");
+        LOGGER.info("Config loaded with success, enabled " + this.icons.size() + " items");
     }
 
     /**
@@ -121,7 +119,7 @@ public class ExtraIconPatcher extends IconPathPatcher {
                 // base64 icon provided by user: store as local file
                 File svgFile = IconUtils.createOrGetTempSVGFile(B64_DECODER.decode(iconStr));
                 String decodedIconPath = svgFile.getAbsolutePath();
-                if (detectedOS == OS.WIN) { // TODO see if should use VfsUtil.fixURLforIDEA(urlStr)
+                if (OS.CURRENT == OS.Windows) { // TODO see if should use VfsUtil.fixURLforIDEA(urlStr)
                     morphedIcons.put(iconKey, "file:/" + decodedIconPath); //NON-NLS
                 } else {
                     morphedIcons.put(iconKey, "file://" + decodedIconPath); //NON-NLS

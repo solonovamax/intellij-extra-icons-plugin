@@ -7,6 +7,7 @@ import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.NewUI;
 import com.intellij.util.IconUtil;
+import com.intellij.util.system.OS;
 import com.intellij.util.ui.ImageUtil;
 import lermitage.intellij.extra.icons.IconType;
 import lermitage.intellij.extra.icons.Model;
@@ -18,11 +19,12 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
-import java.awt.Image;
+import javax.swing.*;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import static lermitage.intellij.extra.icons.utils.Base64Utils.B64_DECODER;
@@ -33,8 +35,6 @@ public class IconUtils {
     private static final @NonNls Logger LOGGER = Logger.getInstance(IconUtils.class);
 
     private static final int SCALING_SIZE = 16;
-
-    private static final OS DETECT_OS = OS.detectOS();
 
     private static final File TMP_FOLDER = new File(System.getProperty("java.io.tmpdir"));
 
@@ -73,7 +73,7 @@ public class IconUtils {
             byte[] imageBytes;
             try {
                 imageBytes = virtualFile.contentsToByteArray();
-                if (virtualFile.getExtension().equals("svg") && new String(imageBytes).startsWith("<")) {
+                if ("svg".equals(virtualFile.getExtension()) && new String(imageBytes, StandardCharsets.UTF_8).startsWith("<")) {
                     iconType = IconType.SVG;
                 } else {
                     iconType = IconType.IMG;
@@ -113,7 +113,8 @@ public class IconUtils {
         try {
             File svgFile = createOrGetTempSVGFile(imageBytes);
             svgFilePath = svgFile.getAbsolutePath();
-            String prefix = DETECT_OS == OS.WIN ? "file:/" : "file://"; //NON-NLS // TODO see if should use VfsUtil.fixURLforIDEA(urlStr)
+            String prefix =
+                OS.CURRENT == OS.Windows ? "file:/" : "file://"; // NON-NLS // TODO see if should use VfsUtil.fixURLforIDEA(urlStr)
             Icon icon = IconLoader.getIcon(prefix + svgFile.getAbsolutePath().replaceAll("\\\\", "/"), IconUtils.class);
             if (icon.getIconWidth() == 16) {
                 return new ImageWrapper(IconType.SVG, IconUtil.toImage(icon), imageBytes);
@@ -146,7 +147,7 @@ public class IconUtils {
             try {
                 return loadSVGAsImageWrapper(imageBytes, additionalUIScale);
             } catch (Exception ex) {
-                LOGGER.info("Can't load " + iconType + " icon: " + ex.getMessage(), ex);
+                LOGGER.info("Can't load " + IconType.SVG + " icon: " + ex.getMessage(), ex);
                 return null;
             }
         }
@@ -200,19 +201,19 @@ public class IconUtils {
         }
 
         public IconType getIconType() {
-            return iconType;
+            return this.iconType;
         }
 
         public Image getImage() {
-            return image;
+            return this.image;
         }
 
         public byte[] getImageAsByteArray() {
-            return imageAsByteArray;
+            return this.imageAsByteArray;
         }
 
         public String getImageAsBundledIconRef() {
-            return imageAsBundledIconRef;
+            return this.imageAsBundledIconRef;
         }
     }
 }
