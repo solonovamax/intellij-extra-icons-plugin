@@ -28,7 +28,6 @@ import lermitage.intellij.extra.icons.cfg.models.UserIconsSettingsTableModel;
 import lermitage.intellij.extra.icons.cfg.services.SettingsIDEService;
 import lermitage.intellij.extra.icons.cfg.services.SettingsProjectService;
 import lermitage.intellij.extra.icons.cfg.services.SettingsService;
-import lermitage.intellij.extra.icons.lic.ExtraIconsLicenseStatus;
 import lermitage.intellij.extra.icons.messaging.RefreshIconsNotifierService;
 import lermitage.intellij.extra.icons.utils.ComboBoxWithImageItem;
 import lermitage.intellij.extra.icons.utils.ComboBoxWithImageRenderer;
@@ -115,7 +114,6 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
     private JLabel labelKnownIssueTitle;
     private JLabel labelKnownIssue3;
     private JButton buttonKnownIssue3;
-    private JLabel licenseMissingLabel;
 
     private PluginIconsSettingsTableModel pluginIconsSettingsTableModel;
     private UserIconsSettingsTableModel userIconsSettingsTableModel;
@@ -409,9 +407,6 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
     }
 
     private void initComponents() {
-        this.licenseMissingLabel.setText(i18n.getString("license.not.found.config.title"));
-        this.licenseMissingLabel.setVisible(!ExtraIconsLicenseStatus.isLicenseActivated());
-
         this.uiTypeSelector.setRenderer(new ComboBoxWithImageRenderer());
         this.uiTypeSelector.addItem(new ComboBoxWithImageItem(
             "extra-icons/plugin-internals/auto.svg", //NON-NLS

@@ -20,7 +20,6 @@ import com.intellij.ui.NewUI;
 import lermitage.intellij.extra.icons.cfg.services.SettingsIDEService;
 import lermitage.intellij.extra.icons.cfg.services.SettingsProjectService;
 import lermitage.intellij.extra.icons.cfg.services.SettingsService;
-import lermitage.intellij.extra.icons.lic.ExtraIconsLicenseStatus;
 import lermitage.intellij.extra.icons.services.FacetsFinderService;
 import lermitage.intellij.extra.icons.utils.I18nUtils;
 import lermitage.intellij.extra.icons.utils.IconUtils;
@@ -29,7 +28,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.Icon;
+import javax.swing.*;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public abstract class BaseIconProvider
 
     private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
 
-    public BaseIconProvider() {
+    protected BaseIconProvider() {
         super();
         final UIType uiType = NewUI.isEnabled() ? UIType.NEW_UI : UIType.OLD_UI;
         if (LOGGER.isDebugEnabled()) {
@@ -72,7 +71,7 @@ public abstract class BaseIconProvider
             .filter(model -> model.getModelType() == ModelType.FILE || model.getModelType() == ModelType.DIR)
             .filter(model -> model.getUiType() == null || model.getUiType() == uiType)
             .toList();
-        uiTypeIconsPreference = SettingsIDEService.getInstance().getUiTypeIconsPreference();
+        this.uiTypeIconsPreference = SettingsIDEService.getInstance().getUiTypeIconsPreference();
     }
 
     /**
@@ -231,10 +230,7 @@ public abstract class BaseIconProvider
 
     @Nullable
     private Icon getIcon(@NotNull File file, @NotNull FileType fileType, @Nullable Project project) {
-        if (!ExtraIconsLicenseStatus.isLicenseActivated()) {
-            return null;
-        }
-        nbGetIcon++;
+        this.nbGetIcon++;
         try {
             if (!ProjectUtils.isProjectAlive(project)) {
                 return null;
@@ -263,12 +259,12 @@ public abstract class BaseIconProvider
                 if (model.getModelType() == currentModelType && model.isEnabled() && !settingsService.getDisabledModelIds().contains(model.getId())) {
                     if (model.getParentId() != null && parentModelIdWhoseCheckFailed == model.getParentId()) {
                         // check already returned false for this model (parent or alt), don't need to check again
-                        checks_saved++;
+                        this.checks_saved++;
                         continue;
                     }
-                    checks_done++;
+                    this.checks_done++;
                     if (model.check(parentName, normalizedFileName, normalizedFileAbsPath, facets, project)) {
-                        return IconUtils.getIcon(model, additionalUIScale, uiTypeIconsPreference);
+                        return IconUtils.getIcon(model, additionalUIScale, this.uiTypeIconsPreference);
                     } else {
                         parentModelIdWhoseCheckFailed = model.getParentId() == null ? model.getId() : model.getParentId();
                     }
@@ -283,12 +279,14 @@ public abstract class BaseIconProvider
     }
 
     private void logCacheHitStats() {
-        if (LOGGER.isDebugEnabled() && nbGetIcon > 0 && checks_done > 0 && (nbGetIcon < 5 || nbGetIcon < 100 ? nbGetIcon % 20 == 0 : nbGetIcon % 100 == 0)) {
+        if (LOGGER.isDebugEnabled() && this.nbGetIcon > 0 && this.checks_done > 0 && (
+                this.nbGetIcon < 5 || this.nbGetIcon < 100 ? this.nbGetIcon % 20 == 0 :
+                this.nbGetIcon % 100 == 0)) {
             // activate with Help > Diagnostic Tools > Debug Log Settings > #lermitage.intellij.extra.icons.BaseIconProvider
             LOGGER.debug("[" + Thread.currentThread().getId() + "] " +
-                "getIcon: " + nbGetIcon + ", " +
-                "checks_done: " + checks_done + ", " +
-                "checks_saved: " + checks_saved + " (" + (checks_saved * 100 / checks_done) + "%)");
+                         "getIcon: " + this.nbGetIcon + ", " +
+                         "checks_done: " + this.checks_done + ", " +
+                         "checks_saved: " + this.checks_saved + " (" + (this.checks_saved * 100 / this.checks_done) + "%)");
         }
     }
 
@@ -326,7 +324,7 @@ public abstract class BaseIconProvider
             customModelsStream = SettingsIDEService.getInstance().getCustomModels().stream();
         }
 
-        return Stream.concat(customModelsStream, models.stream()).collect(Collectors.toList());//
+        return Stream.concat(customModelsStream, this.models.stream()).collect(Collectors.toList());//
     }
 
     /**
