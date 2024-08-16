@@ -33,11 +33,6 @@ plugins {
 val pluginXmlFile = projectDir.resolve("src/main/resources/META-INF/plugin.xml")
 val pluginXmlFileBackup = projectDir.resolve("plugin.backup.xml")
 
-val pluginLogoFile = projectDir.resolve("src/main/resources/META-INF/pluginIcon.svg")
-val pluginLogoFileBackup = projectDir.resolve("pluginIcon.backup.svg")
-val pluginLogoLifetimeFile = projectDir.resolve("misc/pluginIcon.lifetime.svg")
-val pluginLogoFreeFile = projectDir.resolve("misc/pluginIcon.free.svg")
-
 // Import variables from gradle.properties file
 val pluginDownloadIdeaSources: String by project
 val pluginVersion: String by project
@@ -132,74 +127,6 @@ testlogger {
 }
 
 tasks {
-    register("backupPluginLogo") {
-        doLast {
-            if (pluginLogoFileBackup.exists()) {
-                if (!pluginLogoFileBackup.delete()) {
-                    throw GradleException("Failed to remove existing plugin logo file backup '${pluginLogoFileBackup}'")
-                }
-            }
-            FileUtils.copyFile(pluginLogoFile, pluginLogoFileBackup)
-        }
-    }
-    register("restorePluginLogoFromBackup") {
-        doLast {
-            if (!pluginLogoFileBackup.exists()) {
-                throw GradleException("Plugin logo file backup '${pluginLogoFileBackup}' is missing")
-            }
-            if (pluginLogoFile.exists()) {
-                if (!pluginLogoFile.delete()) {
-                    throw GradleException("Failed to remove non-original plugin logo file backup '${pluginLogoFile}'")
-                }
-            }
-            FileUtils.moveFile(pluginLogoFileBackup, pluginLogoFile)
-        }
-    }
-    register("usePluginLogoFree") {
-        doLast {
-            if (pluginLogoFile.exists()) {
-                if (!pluginLogoFile.delete()) {
-                    throw GradleException("Failed to remove existing plugin logo file backup '${pluginLogoFile}'")
-                }
-            }
-            FileUtils.copyFile(pluginLogoFreeFile, pluginLogoFile)
-        }
-    }
-
-    register("backupPluginXml") {
-        doLast {
-            if (pluginXmlFileBackup.exists()) {
-                if (!pluginXmlFileBackup.delete()) {
-                    throw GradleException("Failed to remove existing plugin xml file backup '${pluginXmlFileBackup}'")
-                }
-            }
-            FileUtils.copyFile(pluginXmlFile, pluginXmlFileBackup)
-        }
-    }
-    register("restorePluginXmlFromBackup") {
-        doLast {
-            if (!pluginXmlFileBackup.exists()) {
-                throw GradleException("Plugin xml file backup '${pluginXmlFileBackup}' is missing")
-            }
-            if (pluginXmlFile.exists()) {
-                if (!pluginXmlFile.delete()) {
-                    throw GradleException("Failed to remove non-original plugin xml file backup '${pluginXmlFile}'")
-                }
-            }
-            FileUtils.moveFile(pluginXmlFileBackup, pluginXmlFile)
-        }
-    }
-
-    register("showGeneratedPlugin") {
-        doLast {
-            logger.quiet(
-                "--------------------------------------------------\n" +
-                        "Generated: " + projectDir.resolve("build/distributions/").list().contentToString()
-                    .replace("[", "").replace("]", " ").trim()
-                        + "\n--------------------------------------------------"
-            )
-        }
-    }
     register("clearSandboxedIDESystemLogs") {
         doFirst {
             if (pluginClearSandboxedIDESystemLogsBeforeRun.toBoolean()) {
@@ -279,20 +206,11 @@ tasks {
         enabled = false
     }
     patchPluginXml {
-        dependsOn(
-            "backupPluginLogo",
-            "usePluginLogoFree",
-            "backupPluginXml",
-        )
-
         changeNotes.set(provider {
             with(changelog) {
                 renderItem(getLatest(), Changelog.OutputType.HTML)
             }
         })
-    }
-    buildPlugin {
-        finalizedBy("restorePluginLogoFromBackup", "restorePluginXmlFromBackup")
     }
     publishPlugin {
         token.set(System.getenv("JLE_IJ_PLUGINS_PUBLISH_TOKEN"))
