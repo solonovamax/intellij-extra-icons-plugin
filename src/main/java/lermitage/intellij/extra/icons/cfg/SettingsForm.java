@@ -8,7 +8,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.ComboboxSpeedSearch;
 import com.intellij.ui.IdeBorderFactory;
@@ -16,6 +15,7 @@ import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.system.OS;
+import lermitage.intellij.extra.icons.ExtraIcons;
 import lermitage.intellij.extra.icons.Model;
 import lermitage.intellij.extra.icons.ModelTag;
 import lermitage.intellij.extra.icons.ModelType;
@@ -58,7 +58,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -67,7 +66,7 @@ import java.util.stream.Stream;
 public class SettingsForm implements Configurable, Configurable.NoScroll {
 
     private static final @NonNls Logger LOGGER = Logger.getInstance(SettingsForm.class);
-
+    private final JBTable userIconsTable = new JBTable();
     private JPanel pane;
     private JButton buttonEnableAll;
     private JButton buttonDisableAll;
@@ -77,7 +76,6 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
     private JTabbedPane iconsTabbedPane;
     private JBTable pluginIconsTable;
     private JPanel userIconsTablePanel;
-    private final JBTable userIconsTable = new JBTable();
     private JPanel overrideSettingsPanel;
     private JCheckBox addToIDEUserIconsCheckbox;
     private JLabel filterLabel;
@@ -114,15 +112,11 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
     private JLabel labelKnownIssueTitle;
     private JLabel labelKnownIssue3;
     private JButton buttonKnownIssue3;
-
     private PluginIconsSettingsTableModel pluginIconsSettingsTableModel;
     private UserIconsSettingsTableModel userIconsSettingsTableModel;
     private @Nullable Project project;
     private List<Model> customModels = new ArrayList<>();
-
     private boolean forceUpdate = false;
-
-    private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
 
     public SettingsForm() {
         this.buttonEnableAll.addActionListener(e -> enableAll(true));
@@ -148,23 +142,22 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
             try {
                 RefreshIconsNotifierService.getInstance().triggerAllIconsRefreshAndIconEnablersReinit();
                 Messages.showInfoMessage(
-                    i18n.getString("icons.reloaded"),
-                    i18n.getString("icons.reloaded.title")
+                        I18nUtils.RESOURCE_BUNDLE.getString("icons.reloaded"),
+                        I18nUtils.RESOURCE_BUNDLE.getString("icons.reloaded.title")
                 );
             } catch (Exception e) {
                 LOGGER.warn("Config updated, but failed to reload icons for project", e);
                 Messages.showErrorDialog(
-                    i18n.getString("icons.failed.to.reload"),
-                    i18n.getString("icons.failed.to.reload.title")
+                        I18nUtils.RESOURCE_BUNDLE.getString("icons.failed.to.reload"),
+                        I18nUtils.RESOURCE_BUNDLE.getString("icons.failed.to.reload.title")
                 );
             }
         });
         this.buttonImportIconPackFromFile.addActionListener(al -> {
             try {
-                Optional<String> iconPackPath = FileChooserUtils.chooseFile(i18n.getString("dialog.import.icon.pack.title"),
-                    this.pane, "*.json", "json"); //NON-NLS
-                if (iconPackPath.isPresent()) {
-                    IconPack iconPack = IconPackUtils.fromJsonFile(new File(iconPackPath.get()));
+                String iconPackPath = FileChooserUtils.chooseFile(I18nUtils.RESOURCE_BUNDLE.getString("dialog.import.icon.pack.title"), this.pane, "*.json", "json");
+                if (iconPackPath != null) {
+                    IconPack iconPack = IconPackUtils.readPackFromJsonFile(new File(iconPackPath));
                     for (Model model : iconPack.getModels()) {
                         if (iconPack.getName() != null && !iconPack.getName().isBlank()) {
                             model.setIconPack(iconPack.getName());
@@ -175,8 +168,8 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
                     setUserIconsTableModel();
                     apply();
                     Messages.showInfoMessage(
-                        i18n.getString("dialog.import.icon.pack.success"),
-                        i18n.getString("dialog.import.icon.pack.success.title")
+                            I18nUtils.RESOURCE_BUNDLE.getString("dialog.import.icon.pack.success"),
+                            I18nUtils.RESOURCE_BUNDLE.getString("dialog.import.icon.pack.success.title")
                     );
                 }
             } catch (Exception e) {
@@ -184,24 +177,24 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
             }
         });
         this.buttonShowIconPacksFromWeb.addActionListener(al ->
-            BrowserUtil.browse("https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/themes/THEMES.md#downloadable-icon-packs"));
+                BrowserUtil.browse("https://github.com/jonathanlermitage/intellij-extra-icons-plugin/blob/master/themes/THEMES.md#downloadable-icon-packs"));
         this.buttonExportUserIconsAsIconPack.addActionListener(al -> {
             try {
-                Optional<String> folderPath = FileChooserUtils.chooseFolder(i18n.getString("dialog.export.icon.pack.title"), this.pane);
-                if (folderPath.isPresent()) {
-                    String filename = "extra-icons-" + System.currentTimeMillis() + "-icon-pack.json"; //NON-NLS
+                String folderPath = FileChooserUtils.chooseFolder(I18nUtils.RESOURCE_BUNDLE.getString("dialog.export.icon.pack.title"), this.pane);
+                if (folderPath != null) {
+                    String filename = "extra-icons-" + System.currentTimeMillis() + "-icon-pack.json"; // NON-NLS
                     AskSingleTextDialog askSingleTextDialog = new AskSingleTextDialog( // TODO replace by Messages.showInputDialog
-                        i18n.getString("dialog.export.ask.icon.pack.name.window.title"),
-                        i18n.getString("dialog.export.ask.icon.pack.name.title"));
+                            I18nUtils.RESOURCE_BUNDLE.getString("dialog.export.ask.icon.pack.name.window.title"),
+                            I18nUtils.RESOURCE_BUNDLE.getString("dialog.export.ask.icon.pack.name.title"));
                     String iconPackName = "";
                     if (askSingleTextDialog.showAndGet()) {
                         iconPackName = askSingleTextDialog.getTextFromInput();
                     }
-                    File exportFile = new File(folderPath.get() + "/" + filename);
-                    IconPackUtils.writeToJsonFile(exportFile, new IconPack(iconPackName, getBestSettingsService(this.project).getCustomModels()));
+                    File exportFile = new File(folderPath + "/" + filename);
+                    IconPackUtils.writePackToJsonFile(exportFile, new IconPack(iconPackName, getBestSettingsService(this.project).getCustomModels()));
                     Messages.showInfoMessage(
-                        i18n.getString("dialog.export.icon.pack.success") + "\n" + exportFile.getAbsolutePath(),
-                        i18n.getString("dialog.export.icon.pack.success.title")
+                            I18nUtils.RESOURCE_BUNDLE.getString("dialog.export.icon.pack.success") + "\n" + exportFile.getAbsolutePath(),
+                            I18nUtils.RESOURCE_BUNDLE.getString("dialog.export.icon.pack.success.title")
                     );
                 }
             } catch (Exception e) {
@@ -216,8 +209,8 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
                     String iconPackToUninstall = iconPackUninstallerDialog.getIconPackNameFromInput();
                     if (!iconPackToUninstall.isBlank()) {
                         this.customModels = this.customModels.stream()
-                            .filter(model -> !iconPackToUninstall.equals(model.getIconPack()))
-                            .collect(Collectors.toList());
+                                .filter(model -> !iconPackToUninstall.equals(model.getIconPack()))
+                                .collect(Collectors.toList());
                         foldersFirst(this.customModels);
                         setUserIconsTableModel();
                         apply();
@@ -232,8 +225,8 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
             this.additionalUIScaleTextField.setText(uiScale);
             this.additionalUIScaleTextField.grabFocus();
             Messages.showInfoMessage(
-                MessageFormat.format(i18n.getString("btn.scalefactor.detect.infomessage.message"), uiScale),
-                i18n.getString("btn.scalefactor.detect.infomessage.title"));
+                    MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("btn.scalefactor.detect.infomessage.message"), uiScale),
+                    I18nUtils.RESOURCE_BUNDLE.getString("btn.scalefactor.detect.infomessage.title"));
         });
         this.resetHintsButton.addActionListener(al -> {
             SettingsIDEService settingsIDEService = SettingsIDEService.getInstance();
@@ -242,8 +235,8 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
             settingsIDEService.setLifetimeLicIntroHintNotifDisplayed(false);
             this.resetHintsButton.setEnabled(false);
             Messages.showInfoMessage(
-                i18n.getString("reset.hints.success.subtitle"),
-                i18n.getString("reset.hints.success.title")
+                    I18nUtils.RESOURCE_BUNDLE.getString("reset.hints.success.subtitle"),
+                    I18nUtils.RESOURCE_BUNDLE.getString("reset.hints.success.title")
             );
         });
     }
@@ -259,7 +252,7 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
 
     @Override
     public @Nls(capitalization = Nls.Capitalization.Title) String getDisplayName() {
-        return "Extra Icons"; //NON-NLS
+        return "Extra Icons"; // NON-NLS
     }
 
     @Override
@@ -283,7 +276,7 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
         SettingsIDEService settingsIDEService = SettingsIDEService.getInstance();
 
         if (isProjectForm()) {
-            //noinspection DataFlowIssue
+            // noinspection DataFlowIssue
             SettingsProjectService projectService = SettingsProjectService.getInstance(this.project);
             if (projectService.isOverrideIDESettings() != this.overrideSettingsCheckbox.isSelected()) {
                 return true;
@@ -298,7 +291,9 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
         if (!CollectionUtils.isEqualCollection(this.customModels, bestSettingsService.getCustomModels())) {
             return true;
         }
-        if (!CollectionUtils.isEqualCollection(this.customModels.stream().map(Model::isEnabled).collect(Collectors.toList()), collectUserIconEnabledStates())) {
+        if (!CollectionUtils.isEqualCollection(this.customModels.stream()
+                .map(Model::isEnabled)
+                .collect(Collectors.toList()), collectUserIconEnabledStates())) {
             return true;
         }
         if (settingsIDEService.getUiTypeIconsPreference() != getSelectedUITypeIconsPreference()) {
@@ -311,51 +306,7 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
             return true;
         }
         return !this.ignoredPatternTextField.getText().equals(bestSettingsService.getIgnoredPattern())
-            || !this.additionalUIScaleTextField.getText().equals(Double.toString(settingsIDEService.getAdditionalUIScale2()));
-    }
-
-    private List<String> collectDisabledModelIds() {
-        if (this.pluginIconsSettingsTableModel == null) {
-            return Collections.emptyList();
-        }
-
-        List<String> disabledModelIds = new ArrayList<>();
-        for (int settingsTableRow = 0; settingsTableRow < this.pluginIconsSettingsTableModel.getRowCount(); settingsTableRow++) {
-            boolean iconEnabled = (boolean) this.pluginIconsSettingsTableModel.getValueAt(settingsTableRow, PluginIconsSettingsTableModel.ICON_ENABLED_COL_NUMBER);
-            if (!iconEnabled) {
-                disabledModelIds.add((String) this.pluginIconsSettingsTableModel.getValueAt(settingsTableRow, PluginIconsSettingsTableModel.ICON_ID_COL_NUMBER));
-            }
-        }
-        return disabledModelIds;
-    }
-
-    private List<Boolean> collectUserIconEnabledStates() {
-        if (this.userIconsSettingsTableModel == null) {
-            return Collections.emptyList();
-        }
-
-        return IntStream.range(0, this.userIconsSettingsTableModel.getRowCount()).mapToObj(
-            index -> ((boolean) this.userIconsSettingsTableModel.getValueAt(index, UserIconsSettingsTableModel.ICON_ENABLED_COL_NUMBER))
-        ).collect(Collectors.toList());
-    }
-
-    private UITypeIconsPreference getSelectedUITypeIconsPreference() {
-        int selectedIndex = this.uiTypeSelector.getSelectedIndex();
-        if (selectedIndex == 0) {
-            return UITypeIconsPreference.BASED_ON_ACTIVE_UI_TYPE;
-        } else if (selectedIndex == 1) {
-            return UITypeIconsPreference.PREFER_OLD_UI_ICONS;
-        } else {
-            return UITypeIconsPreference.PREFER_NEW_UI_ICONS;
-        }
-    }
-
-    private void setSelectedUITypeIconsPreference(UITypeIconsPreference uiTypeIconsPreference) {
-        switch (uiTypeIconsPreference) {
-            case BASED_ON_ACTIVE_UI_TYPE -> this.uiTypeSelector.setSelectedIndex(0);
-            case PREFER_OLD_UI_ICONS -> this.uiTypeSelector.setSelectedIndex(1);
-            case PREFER_NEW_UI_ICONS -> this.uiTypeSelector.setSelectedIndex(2);
-        }
+               || !this.additionalUIScaleTextField.getText().equals(Double.toString(settingsIDEService.getAdditionalUIScale2()));
     }
 
     @Override
@@ -364,7 +315,7 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
         SettingsIDEService settingsIDEService = SettingsIDEService.getInstance();
 
         if (isProjectForm()) {
-            //noinspection DataFlowIssue
+            // noinspection DataFlowIssue
             SettingsProjectService projectService = SettingsProjectService.getInstance(this.project);
             projectService.setOverrideIDESettings(this.overrideSettingsCheckbox.isSelected());
             projectService.setAddToIDEUserIcons(this.addToIDEUserIconsCheckbox.isSelected());
@@ -377,8 +328,8 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
             settingsIDEService.setAdditionalUIScale2(Double.valueOf(this.additionalUIScaleTextField.getText()));
         } catch (NumberFormatException e) {
             Messages.showErrorDialog(
-                MessageFormat.format(i18n.getString("invalid.ui.scalefactor"), this.additionalUIScaleTextField.getText()),
-                i18n.getString("invalid.ui.scalefactor.title")
+                    MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("invalid.ui.scalefactor"), this.additionalUIScaleTextField.getText()),
+                    I18nUtils.RESOURCE_BUNDLE.getString("invalid.ui.scalefactor.title")
             );
         }
         List<Boolean> enabledStates = collectUserIconEnabledStates();
@@ -402,6 +353,59 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
         this.forceUpdate = false;
     }
 
+    @Override
+    public void reset() {
+        initCheckbox();
+        loadPluginIconsTable();
+        loadUserIconsTable();
+        loadIgnoredPattern();
+        loadAdditionalUIScale();
+    }
+
+    private List<String> collectDisabledModelIds() {
+        if (this.pluginIconsSettingsTableModel == null) {
+            return Collections.emptyList();
+        }
+
+        List<String> disabledModelIds = new ArrayList<>();
+        for (int settingsTableRow = 0; settingsTableRow < this.pluginIconsSettingsTableModel.getRowCount(); settingsTableRow++) {
+            boolean iconEnabled = (boolean) this.pluginIconsSettingsTableModel.getValueAt(settingsTableRow, PluginIconsSettingsTableModel.ICON_ENABLED_COL_NUMBER);
+            if (!iconEnabled) {
+                disabledModelIds.add((String) this.pluginIconsSettingsTableModel.getValueAt(settingsTableRow, PluginIconsSettingsTableModel.ICON_ID_COL_NUMBER));
+            }
+        }
+        return disabledModelIds;
+    }
+
+    private List<Boolean> collectUserIconEnabledStates() {
+        if (this.userIconsSettingsTableModel == null) {
+            return Collections.emptyList();
+        }
+
+        return IntStream.range(0, this.userIconsSettingsTableModel.getRowCount()).mapToObj(
+                index -> ((boolean) this.userIconsSettingsTableModel.getValueAt(index, UserIconsSettingsTableModel.ICON_ENABLED_COL_NUMBER))
+        ).collect(Collectors.toList());
+    }
+
+    private UITypeIconsPreference getSelectedUITypeIconsPreference() {
+        int selectedIndex = this.uiTypeSelector.getSelectedIndex();
+        if (selectedIndex == 0) {
+            return UITypeIconsPreference.BASED_ON_ACTIVE_UI_TYPE;
+        } else if (selectedIndex == 1) {
+            return UITypeIconsPreference.PREFER_OLD_UI_ICONS;
+        } else {
+            return UITypeIconsPreference.PREFER_NEW_UI_ICONS;
+        }
+    }
+
+    private void setSelectedUITypeIconsPreference(UITypeIconsPreference uiTypeIconsPreference) {
+        switch (uiTypeIconsPreference) {
+            case BASED_ON_ACTIVE_UI_TYPE -> this.uiTypeSelector.setSelectedIndex(0);
+            case PREFER_OLD_UI_ICONS -> this.uiTypeSelector.setSelectedIndex(1);
+            case PREFER_NEW_UI_ICONS -> this.uiTypeSelector.setSelectedIndex(2);
+        }
+    }
+
     public @Nullable Project getProject() {
         return this.project;
     }
@@ -409,42 +413,42 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
     private void initComponents() {
         this.uiTypeSelector.setRenderer(new ComboBoxWithImageRenderer());
         this.uiTypeSelector.addItem(new ComboBoxWithImageItem(
-            "extra-icons/plugin-internals/auto.svg", //NON-NLS
-            i18n.getString("uitype.selector.auto.select")));
+                "extra-icons/plugin-internals/auto.svg", // NON-NLS
+                I18nUtils.RESOURCE_BUNDLE.getString("uitype.selector.auto.select")));
         this.uiTypeSelector.addItem(new ComboBoxWithImageItem(
-            "extra-icons/plugin-internals/folder_oldui.svg",//NON-NLS
-            i18n.getString("uitype.selector.prefer.old")));
+                "extra-icons/plugin-internals/folder_oldui.svg",// NON-NLS
+                I18nUtils.RESOURCE_BUNDLE.getString("uitype.selector.prefer.old")));
         this.uiTypeSelector.addItem(new ComboBoxWithImageItem(
-            "extra-icons/plugin-internals/folder_newui.svg", //NON-NLS
-            i18n.getString("uitype.selector.prefer.new")));
+                "extra-icons/plugin-internals/folder_newui.svg", // NON-NLS
+                I18nUtils.RESOURCE_BUNDLE.getString("uitype.selector.prefer.new")));
         setSelectedUITypeIconsPreference(SettingsIDEService.getInstance().getUiTypeIconsPreference());
 
-        this.disableOrEnableLabel.setText(i18n.getString("quick.action.label"));
+        this.disableOrEnableLabel.setText(I18nUtils.RESOURCE_BUNDLE.getString("quick.action.label"));
 
-        this.buttonEnableAll.setText(i18n.getString("btn.enable.all"));
-        this.buttonEnableAll.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/gutterCheckBoxSelected.svg", SettingsForm.class)); //NON-NLS
+        this.buttonEnableAll.setText(I18nUtils.RESOURCE_BUNDLE.getString("btn.enable.all"));
+        this.buttonEnableAll.setIcon(ExtraIcons.GUTTER_CHECKBOX_SELECTED); // NON-NLS
 
-        this.buttonDisableAll.setText(i18n.getString("btn.disable.all"));
-        this.buttonDisableAll.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/gutterCheckBox.svg", SettingsForm.class)); //NON-NLS
+        this.buttonDisableAll.setText(I18nUtils.RESOURCE_BUNDLE.getString("btn.disable.all"));
+        this.buttonDisableAll.setIcon(ExtraIcons.GUTTER_CHECKBOX); // NON-NLS
 
-        this.ignoredPatternTitle.setText(i18n.getString("label.regex.ignore.relative.paths"));
-        this.ignoredPatternTextField.setToolTipText(i18n.getString("field.regex.ignore.relative.paths"));
-        this.additionalUIScaleTitle.setText(i18n.getString("label.ui.scalefactor"));
-        this.additionalUIScaleTextField.setToolTipText(i18n.getString("field.ui.scalefactor"));
-        this.detectAdditionalUIScaleButton.setText(i18n.getString("btn.scalefactor.detect"));
+        this.ignoredPatternTitle.setText(I18nUtils.RESOURCE_BUNDLE.getString("label.regex.ignore.relative.paths"));
+        this.ignoredPatternTextField.setToolTipText(I18nUtils.RESOURCE_BUNDLE.getString("field.regex.ignore.relative.paths"));
+        this.additionalUIScaleTitle.setText(I18nUtils.RESOURCE_BUNDLE.getString("label.ui.scalefactor"));
+        this.additionalUIScaleTextField.setToolTipText(I18nUtils.RESOURCE_BUNDLE.getString("field.ui.scalefactor"));
+        this.detectAdditionalUIScaleButton.setText(I18nUtils.RESOURCE_BUNDLE.getString("btn.scalefactor.detect"));
         this.additionalUIScaleTextField.setColumns(4);
-        this.filterLabel.setText(i18n.getString("plugin.icons.table.filter"));
+        this.filterLabel.setText(I18nUtils.RESOURCE_BUNDLE.getString("plugin.icons.table.filter"));
         this.filterTextField.setText("");
-        this.filterTextField.setToolTipText(i18n.getString("plugin.icons.table.filter.tooltip"));
-        this.filterResetBtn.setText(i18n.getString("btn.plugin.icons.table.filter.reset"));
-        this.bottomTip.setText(i18n.getString("plugin.icons.table.bottom.tip"));
-        this.resetHintsTitle.setText(i18n.getString("reset.hints.title"));
-        this.resetHintsButton.setText(i18n.getString("reset.hints.btn"));
+        this.filterTextField.setToolTipText(I18nUtils.RESOURCE_BUNDLE.getString("plugin.icons.table.filter.tooltip"));
+        this.filterResetBtn.setText(I18nUtils.RESOURCE_BUNDLE.getString("btn.plugin.icons.table.filter.reset"));
+        this.bottomTip.setText(I18nUtils.RESOURCE_BUNDLE.getString("plugin.icons.table.bottom.tip"));
+        this.resetHintsTitle.setText(I18nUtils.RESOURCE_BUNDLE.getString("reset.hints.title"));
+        this.resetHintsButton.setText(I18nUtils.RESOURCE_BUNDLE.getString("reset.hints.btn"));
 
         initCheckbox();
 
         loadPluginIconsTable();
-        //TableSpeedSearch.installOn(pluginIconsTable); // TODO install a SpeedSearch on icons table once 232 is the new IDE min version, and make it work (for now, the settings search field steals focus)
+        // TableSpeedSearch.installOn(pluginIconsTable); // TODO install a SpeedSearch on icons table once 232 is the new IDE min version, and make it work (for now, the settings search field steals focus)
 
         this.userIconsTable.setShowHorizontalLines(false);
         this.userIconsTable.setShowVerticalLines(false);
@@ -469,81 +473,78 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
             this.resetHintsButton.setVisible(false);
         }
 
-        this.overrideSettingsCheckbox.setText(i18n.getString("checkbox.override.ide.settings"));
-        this.overrideSettingsCheckbox.setToolTipText(i18n.getString("checkbox.override.ide.settings.tooltip"));
+        this.overrideSettingsCheckbox.setText(I18nUtils.RESOURCE_BUNDLE.getString("checkbox.override.ide.settings"));
+        this.overrideSettingsCheckbox.setToolTipText(I18nUtils.RESOURCE_BUNDLE.getString("checkbox.override.ide.settings.tooltip"));
         this.overrideSettingsCheckbox.addItemListener(item -> {
             boolean enabled = item.getStateChange() == ItemEvent.SELECTED;
             setComponentState(enabled);
         });
 
-        this.addToIDEUserIconsCheckbox.setText(i18n.getString("checkbox.dont.overwrite.ide.user.icons"));
-        this.addToIDEUserIconsCheckbox.setToolTipText(i18n.getString("checkbox.dont.overwrite.ide.user.icons.tooltip"));
+        this.addToIDEUserIconsCheckbox.setText(I18nUtils.RESOURCE_BUNDLE.getString("checkbox.dont.overwrite.ide.user.icons"));
+        this.addToIDEUserIconsCheckbox.setToolTipText(I18nUtils.RESOURCE_BUNDLE.getString("checkbox.dont.overwrite.ide.user.icons.tooltip"));
 
-        this.buttonReloadProjectsIcons.setText(i18n.getString("btn.reload.project.icons"));
-        this.buttonReloadProjectsIcons.setToolTipText(i18n.getString("btn.reload.project.icons.tooltip"));
-        this.buttonReloadProjectsIcons.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/refresh.svg", SettingsForm.class)); //NON-NLS
+        this.buttonReloadProjectsIcons.setText(I18nUtils.RESOURCE_BUNDLE.getString("btn.reload.project.icons"));
+        this.buttonReloadProjectsIcons.setToolTipText(I18nUtils.RESOURCE_BUNDLE.getString("btn.reload.project.icons.tooltip"));
+        this.buttonReloadProjectsIcons.setIcon(ExtraIcons.REFRESH); // NON-NLS
 
         this.comboBoxIconsGroupSelector.setRenderer(new ComboBoxWithImageRenderer());
-        this.comboBoxIconsGroupSelector.addItem(new ComboBoxWithImageItem(i18n.getString("icons")));
+        this.comboBoxIconsGroupSelector.addItem(new ComboBoxWithImageItem(I18nUtils.RESOURCE_BUNDLE.getString("icons")));
         Arrays.stream(ModelTag.values()).forEach(modelTag -> this.comboBoxIconsGroupSelector.addItem(
-            new ComboBoxWithImageItem(modelTag, MessageFormat.format(i18n.getString("icons.tag.name"), modelTag.getName()))
+                new ComboBoxWithImageItem(MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("icons.tag.name"), modelTag.getModelName()), modelTag)
         ));
         ComboboxSpeedSearch.installSpeedSearch(this.comboBoxIconsGroupSelector, ComboBoxWithImageItem::getTitle);
 
-        this.iconPackLabel.setText(i18n.getString("icon.pack.label"));
+        this.iconPackLabel.setText(I18nUtils.RESOURCE_BUNDLE.getString("icon.pack.label"));
 
-        this.buttonImportIconPackFromFile.setText(i18n.getString("btn.import.icon.pack.file"));
-        this.buttonImportIconPackFromFile.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/import.svg", SettingsForm.class)); //NON-NLS
+        this.buttonImportIconPackFromFile.setText(I18nUtils.RESOURCE_BUNDLE.getString("btn.import.icon.pack.file"));
+        this.buttonImportIconPackFromFile.setIcon(ExtraIcons.IMPORT); // NON-NLS
 
-        this.buttonShowIconPacksFromWeb.setText(i18n.getString("btn.import.icon.pack.web"));
-        this.buttonShowIconPacksFromWeb.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
-        this.buttonShowIconPacksFromWeb.setToolTipText(i18n.getString("btn.import.icon.pack.web.tooltip"));
+        this.buttonShowIconPacksFromWeb.setText(I18nUtils.RESOURCE_BUNDLE.getString("btn.import.icon.pack.web"));
+        this.buttonShowIconPacksFromWeb.setIcon(ExtraIcons.WEB); // NON-NLS
+        this.buttonShowIconPacksFromWeb.setToolTipText(I18nUtils.RESOURCE_BUNDLE.getString("btn.import.icon.pack.web.tooltip"));
 
-        this.buttonExportUserIconsAsIconPack.setText(i18n.getString("btn.export.icon.pack"));
-        this.buttonExportUserIconsAsIconPack.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/export.svg", SettingsForm.class)); //NON-NLS
+        this.buttonExportUserIconsAsIconPack.setText(I18nUtils.RESOURCE_BUNDLE.getString("btn.export.icon.pack"));
+        this.buttonExportUserIconsAsIconPack.setIcon(ExtraIcons.EXPORT); // NON-NLS
 
         this.iconPackContextHelpLabel.setText("");
-        this.iconPackContextHelpLabel.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/contextHelp.svg", SettingsForm.class)); //NON-NLS
-        this.iconPackContextHelpLabel.setToolTipText(i18n.getString("icon.pack.context.help"));
+        this.iconPackContextHelpLabel.setIcon(ExtraIcons.CONTEXT_HELP); // NON-NLS
+        this.iconPackContextHelpLabel.setToolTipText(I18nUtils.RESOURCE_BUNDLE.getString("icon.pack.context.help"));
 
-        this.uiTypeSelectorTitle.setText(i18n.getString("uitype.selector.context.title"));
+        this.uiTypeSelectorTitle.setText(I18nUtils.RESOURCE_BUNDLE.getString("uitype.selector.context.title"));
         this.uiTypeSelectorHelpLabel.setText("");
-        this.uiTypeSelectorHelpLabel.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/contextHelp.svg", SettingsForm.class)); //NON-NLS
-        this.uiTypeSelectorHelpLabel.setToolTipText(i18n.getString("uitype.selector.context.help"));
+        this.uiTypeSelectorHelpLabel.setIcon(ExtraIcons.CONTEXT_HELP); // NON-NLS
+        this.uiTypeSelectorHelpLabel.setToolTipText(I18nUtils.RESOURCE_BUNDLE.getString("uitype.selector.context.help"));
 
-        this.buttonUninstallIconPack.setText(i18n.getString("btn.uninstall.icon.pack"));
-        this.buttonUninstallIconPack.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/remove.svg", SettingsForm.class)); //NON-NLS
+        this.buttonUninstallIconPack.setText(I18nUtils.RESOURCE_BUNDLE.getString("btn.uninstall.icon.pack"));
+        this.buttonUninstallIconPack.setIcon(ExtraIcons.REMOVE); // NON-NLS
 
-        this.mainTabbedPane.setTitleAt(0, " " + i18n.getString("main.pane.main.config.title") + " ");
-        this.mainTabbedPane.setTitleAt(1, " " + i18n.getString("main.pane.advanced.config.title") + " ");
-        this.mainTabbedPane.setTitleAt(2, " " + i18n.getString("main.pane.known.issues.title") + " ");
+        this.mainTabbedPane.setTitleAt(0, " " + I18nUtils.RESOURCE_BUNDLE.getString("main.pane.main.config.title") + " ");
+        this.mainTabbedPane.setTitleAt(1, " " + I18nUtils.RESOURCE_BUNDLE.getString("main.pane.advanced.config.title") + " ");
+        this.mainTabbedPane.setTitleAt(2, " " + I18nUtils.RESOURCE_BUNDLE.getString("main.pane.known.issues.title") + " ");
 
-        this.iconsTabbedPane.setTitleAt(0, " " + i18n.getString("plugin.icons.table.tab.name") + " ");
-        this.iconsTabbedPane.setTitleAt(1, " " + i18n.getString("user.icons.table.tab.name") + " ");
+        this.iconsTabbedPane.setTitleAt(0, " " + I18nUtils.RESOURCE_BUNDLE.getString("plugin.icons.table.tab.name") + " ");
+        this.iconsTabbedPane.setTitleAt(1, " " + I18nUtils.RESOURCE_BUNDLE.getString("user.icons.table.tab.name") + " ");
 
-        this.experimentalPanel.setBorder(IdeBorderFactory.createTitledBorder(i18n.getString("experimental.panel.title")));
+        this.experimentalPanel.setBorder(IdeBorderFactory.createTitledBorder(I18nUtils.RESOURCE_BUNDLE.getString("experimental.panel.title")));
 
         this.useIDEFilenameIndexCheckbox.setSelected(SettingsIDEService.getInstance().getUseIDEFilenameIndex2());
-        this.useIDEFilenameIndexCheckbox.setText(i18n.getString("checkbox.use.ide.filename.index.label"));
-        this.useIDEFilenameIndexTip.setText(i18n.getString("checkbox.use.ide.filename.index.tip"));
+        this.useIDEFilenameIndexCheckbox.setText(I18nUtils.RESOURCE_BUNDLE.getString("checkbox.use.ide.filename.index.label"));
+        this.useIDEFilenameIndexTip.setText(I18nUtils.RESOURCE_BUNDLE.getString("checkbox.use.ide.filename.index.tip"));
 
-        this.labelKnownIssueTitle.setText(i18n.getString("known.issues.title"));
+        this.labelKnownIssueTitle.setText(I18nUtils.RESOURCE_BUNDLE.getString("known.issues.title"));
 
-        this.labelKnownIssue1.setText(i18n.getString("known.issue.label1"));
-        this.labelKnownIssue2.setText(i18n.getString("known.issue.label2"));
-        this.labelKnownIssue3.setText(i18n.getString("known.issue.label3"));
-        this.buttonKnownIssue1.setText(i18n.getString("known.issue.btn1"));
-        this.buttonKnownIssue2.setText(i18n.getString("known.issue.btn2"));
-        this.buttonKnownIssue3.setText(i18n.getString("known.issue.btn3"));
-        this.buttonKnownIssue1.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
-        this.buttonKnownIssue2.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
-        this.buttonKnownIssue3.setIcon(IconLoader.getIcon("extra-icons/plugin-internals/web.svg", SettingsForm.class)); //NON-NLS
-        this.buttonKnownIssue1.addActionListener(al ->
-            BrowserUtil.browse("https://youtrack.jetbrains.com/issue/IDEA-247819"));
-        this.buttonKnownIssue2.addActionListener(al ->
-            BrowserUtil.browse("https://youtrack.jetbrains.com/issue/IDEA-339254"));
-        this.buttonKnownIssue3.addActionListener(al ->
-            BrowserUtil.browse("https://youtrack.jetbrains.com/issue/RIDER-101621"));
+        this.labelKnownIssue1.setText(I18nUtils.RESOURCE_BUNDLE.getString("known.issue.label1"));
+        this.labelKnownIssue2.setText(I18nUtils.RESOURCE_BUNDLE.getString("known.issue.label2"));
+        this.labelKnownIssue3.setText(I18nUtils.RESOURCE_BUNDLE.getString("known.issue.label3"));
+        this.buttonKnownIssue1.setText(I18nUtils.RESOURCE_BUNDLE.getString("known.issue.btn1"));
+        this.buttonKnownIssue2.setText(I18nUtils.RESOURCE_BUNDLE.getString("known.issue.btn2"));
+        this.buttonKnownIssue3.setText(I18nUtils.RESOURCE_BUNDLE.getString("known.issue.btn3"));
+        this.buttonKnownIssue1.setIcon(ExtraIcons.WEB); // NON-NLS
+        this.buttonKnownIssue2.setIcon(ExtraIcons.WEB); // NON-NLS
+        this.buttonKnownIssue3.setIcon(ExtraIcons.WEB); // NON-NLS
+        this.buttonKnownIssue1.addActionListener(al -> BrowserUtil.browse("https://youtrack.jetbrains.com/issue/IDEA-247819"));
+        this.buttonKnownIssue2.addActionListener(al -> BrowserUtil.browse("https://youtrack.jetbrains.com/issue/IDEA-339254"));
+        this.buttonKnownIssue3.addActionListener(al -> BrowserUtil.browse("https://youtrack.jetbrains.com/issue/RIDER-101621"));
 
         initCheckbox();
     }
@@ -557,7 +558,7 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
             this.overrideSettingsPanel.setVisible(false);
             return;
         }
-        //noinspection DataFlowIssue  project is not null here
+        // noinspection DataFlowIssue  project is not null here
         SettingsProjectService settingsService = SettingsProjectService.getInstance(this.project);
         boolean shouldOverride = settingsService.isOverrideIDESettings();
         this.overrideSettingsCheckbox.setSelected(shouldOverride);
@@ -568,19 +569,10 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
 
     private void setComponentState(boolean enabled) {
         Stream.of(this.pluginIconsTable, this.userIconsTable, this.ignoredPatternTitle, this.ignoredPatternTextField,
-            this.iconsTabbedPane, this.addToIDEUserIconsCheckbox, this.filterLabel,
-            this.filterTextField, this.filterResetBtn, this.buttonEnableAll,
-            this.disableOrEnableOrLabel, this.buttonDisableAll, this.disableOrEnableLabel,
-            this.comboBoxIconsGroupSelector, this.mainTabbedPane).forEach(jComponent -> jComponent.setEnabled(enabled));
-    }
-
-    @Override
-    public void reset() {
-        initCheckbox();
-        loadPluginIconsTable();
-        loadUserIconsTable();
-        loadIgnoredPattern();
-        loadAdditionalUIScale();
+                this.iconsTabbedPane, this.addToIDEUserIconsCheckbox, this.filterLabel,
+                this.filterTextField, this.filterResetBtn, this.buttonEnableAll,
+                this.disableOrEnableOrLabel, this.buttonDisableAll, this.disableOrEnableLabel,
+                this.comboBoxIconsGroupSelector, this.mainTabbedPane).forEach(jComponent -> jComponent.setEnabled(enabled));
     }
 
     private void loadUserIconsTable() {
@@ -597,17 +589,17 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
         final Double additionalUIScale = settingsIDEService.getAdditionalUIScale2();
         final UITypeIconsPreference uiTypeIconsPreference = settingsIDEService.getUiTypeIconsPreference();
         this.customModels.forEach(m -> {
-                try {
-                    this.userIconsSettingsTableModel.addRow(new Object[]{
-                        IconUtils.getIcon(m, additionalUIScale, uiTypeIconsPreference),
-                        m.isEnabled(),
-                        m.getDescription(),
-                        m.getIconPack()
-                    });
-                } catch (Throwable e) {
-                    LOGGER.warn(e);
+                    try {
+                        this.userIconsSettingsTableModel.addRow(new Object[]{
+                                IconUtils.getIcon(m, additionalUIScale, uiTypeIconsPreference),
+                                m.isEnabled(),
+                                m.getDescription(),
+                                m.getIconPack()
+                        });
+                    } catch (Throwable e) {
+                        LOGGER.warn(e);
+                    }
                 }
-            }
         );
         this.userIconsTable.setModel(this.userIconsSettingsTableModel);
         this.userIconsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -668,8 +660,8 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
                 }
             });
             // "yes"/"no" to filter by icons enabled/disabled, otherwise regex filter
-            boolean isYesFilter = "yes".equalsIgnoreCase(filter); //NON-NLS
-            if (isYesFilter || "no".equalsIgnoreCase(filter)) { //NON-NLS
+            boolean isYesFilter = "yes".equalsIgnoreCase(filter); // NON-NLS
+            if (isYesFilter || "no".equalsIgnoreCase(filter)) { // NON-NLS
                 sorter.setRowFilter(new RowFilter<>() {
                     @Override
                     public boolean include(Entry<? extends PluginIconsSettingsTableModel, ? extends Integer> entry) {
@@ -705,23 +697,23 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
             // IDE icon overrides work at IDE level only, not a project level, that's why
             // the project-level icons list won't show IDE icons.
             allRegisteredModels = allRegisteredModels.stream()
-                .filter(model -> model.getModelType() != ModelType.ICON)
-                .collect(Collectors.toList());
+                    .filter(model -> model.getModelType() != ModelType.ICON)
+                    .collect(Collectors.toList());
         }
         foldersFirst(allRegisteredModels);
         List<String> disabledModelIds = getBestSettingsService(this.project).getDisabledModelIds();
         final Double additionalUIScale = settingsIDEService.getAdditionalUIScale2();
         final UITypeIconsPreference uiTypeIconsPreference = settingsIDEService.getUiTypeIconsPreference();
-        final Icon restartIcon = IconLoader.getIcon("extra-icons/plugin-internals/reboot.svg", SettingsForm.class); //NON-NLS
+        final Icon restartIcon = ExtraIcons.REBOOT; // NON-NLS
         allRegisteredModels.forEach(m -> this.pluginIconsSettingsTableModel.addRow(new Object[]{
-                IconUtils.getIcon(m, additionalUIScale, uiTypeIconsPreference),
-                !disabledModelIds.contains(m.getId()),
-                m.getDescription(),
-                Arrays.toString(m.getTags().stream().map(ModelTag::getName).toArray()).replaceAll("\\[|]*", "").trim(),
-                Strings.isNullOrEmpty(m.getIdeIcon()) ? null : restartIcon,
-                m.getTags(),
-                m.getId()
-            })
+                        IconUtils.getIcon(m, additionalUIScale, uiTypeIconsPreference),
+                        !disabledModelIds.contains(m.getId()),
+                        m.getDescription(),
+                        Arrays.toString(m.getTags().stream().map(ModelTag::getModelName).toArray()).replaceAll("\\[|]*", "").trim(),
+                        Strings.isNullOrEmpty(m.getIdeIcon()) ? null : restartIcon,
+                        m.getTags(),
+                        m.getId()
+                })
         );
         this.pluginIconsTable.setModel(this.pluginIconsSettingsTableModel);
         this.pluginIconsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -736,7 +728,7 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
         columnModel.getColumn(PluginIconsSettingsTableModel.ICON_TAGS_LABEL_COL_NUMBER).setMinWidth(120);
         columnModel.getColumn(PluginIconsSettingsTableModel.ICON_TAGS_LABEL_COL_NUMBER).setMaxWidth(120);
         columnModel.getColumn(PluginIconsSettingsTableModel.ICON_TAGS_LABEL_COL_NUMBER).setMinWidth(120);
-        int requireRestartColWidth = I18nUtils.isChineseUIEnabled() ? 100 : 80;
+        int requireRestartColWidth = I18nUtils.IS_CHINESE_UI_ENABLED ? 100 : 80;
         if (OS.CURRENT == OS.Windows) {
             requireRestartColWidth -= 5;
         }
@@ -762,37 +754,37 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
     private JComponent createToolbarDecorator() {
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(this.userIconsTable)
 
-            .setAddAction(anActionButton -> {
-                ModelDialog modelDialog = new ModelDialog(this, this.project);
-                if (modelDialog.showAndGet()) {
-                    Model newModel = modelDialog.getModelFromInput();
-                    this.customModels.add(newModel);
-                    foldersFirst(this.customModels);
+                .setAddAction(anActionButton -> {
+                    ModelDialog modelDialog = new ModelDialog(this, this.project);
+                    if (modelDialog.showAndGet()) {
+                        Model newModel = modelDialog.getModelFromInput();
+                        this.customModels.add(newModel);
+                        foldersFirst(this.customModels);
+                        setUserIconsTableModel();
+                    }
+                })
+
+                .setEditAction(anActionButton -> {
+                    int currentSelected = this.userIconsTable.getSelectedRow();
+                    ModelDialog modelDialog = new ModelDialog(this, this.project);
+                    modelDialog.setModelToEdit(this.customModels.get(currentSelected));
+                    if (modelDialog.showAndGet()) {
+                        Model newModel = modelDialog.getModelFromInput();
+                        this.customModels.set(currentSelected, newModel);
+                        setUserIconsTableModel();
+                    }
+                })
+
+                .setRemoveAction(anActionButton -> {
+                    this.customModels.remove(this.userIconsTable.getSelectedRow());
                     setUserIconsTableModel();
-                }
-            })
+                })
 
-            .setEditAction(anActionButton -> {
-                int currentSelected = this.userIconsTable.getSelectedRow();
-                ModelDialog modelDialog = new ModelDialog(this, this.project);
-                modelDialog.setModelToEdit(this.customModels.get(currentSelected));
-                if (modelDialog.showAndGet()) {
-                    Model newModel = modelDialog.getModelFromInput();
-                    this.customModels.set(currentSelected, newModel);
-                    setUserIconsTableModel();
-                }
-            })
+                .setButtonComparator(I18nUtils.RESOURCE_BUNDLE.getString("btn.add"), I18nUtils.RESOURCE_BUNDLE.getString("btn.edit"), I18nUtils.RESOURCE_BUNDLE.getString("btn.remove"))
 
-            .setRemoveAction(anActionButton -> {
-                this.customModels.remove(this.userIconsTable.getSelectedRow());
-                setUserIconsTableModel();
-            })
+                .setMoveUpAction(anActionButton -> reorderUserIcons(MoveDirection.UP, this.userIconsTable.getSelectedRow()))
 
-            .setButtonComparator(i18n.getString("btn.add"), i18n.getString("btn.edit"), i18n.getString("btn.remove"))
-
-            .setMoveUpAction(anActionButton -> reorderUserIcons(MoveDirection.UP, this.userIconsTable.getSelectedRow()))
-
-            .setMoveDownAction(anActionButton -> reorderUserIcons(MoveDirection.DOWN, this.userIconsTable.getSelectedRow()));
+                .setMoveDownAction(anActionButton -> reorderUserIcons(MoveDirection.DOWN, this.userIconsTable.getSelectedRow()));
         return decorator.createPanel();
     }
 
@@ -837,15 +829,15 @@ public class SettingsForm implements Configurable, Configurable.NoScroll {
         return SettingsIDEService.getInstance();
     }
 
-    private enum MoveDirection {
-        UP,
-        DOWN
-    }
-
     private void foldersFirst(List<Model> models) {
         models.sort((o1, o2) -> {
             // folders first, then files
             return ModelType.compare(o1.getModelType(), o2.getModelType());
         });
+    }
+
+    private enum MoveDirection {
+        UP,
+        DOWN
     }
 }

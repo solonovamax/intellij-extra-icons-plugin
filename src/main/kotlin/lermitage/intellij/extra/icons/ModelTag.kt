@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
+package lermitage.intellij.extra.icons
 
-package lermitage.intellij.extra.icons;
-
-@SuppressWarnings("HardCodedStringLiteral")
-public enum ModelTag {
-
+@Suppress("HardCodedStringLiteral")
+enum class ModelTag(val modelName: String, val icon: String) {
     ANGULAR2("Angular", "extra-icons/angular2.svg"),
     DOCKER("Docker", "extra-icons/docker_.svg"),
     FLUTTER("Flutter", "extra-icons/flutter.svg"),
@@ -19,21 +17,5 @@ public enum ModelTag {
     PRETTIER("Prettier", "extra-icons/prettier.svg"),
     STORYBOOK("Storybook", "extra-icons/storybook.svg"),
     TRAVIS("Travis CI", "extra-icons/travis.svg"),
-    WRITERSIDE("Writerside", "extra-icons/writerside.svg");
-
-    ModelTag(String name, String icon) {
-        this.name = name;
-        this.icon = icon;
-    }
-
-    private final String name;
-    private final String icon;
-
-    public String getName() {
-        return name;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
+    WRITERSIDE("Writerside", "extra-icons/writerside.svg")
 }

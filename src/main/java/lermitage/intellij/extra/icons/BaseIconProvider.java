@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,8 +57,6 @@ public abstract class BaseIconProvider
     private long checks_done = 0;
     private long checks_saved = 0;
     private final UITypeIconsPreference uiTypeIconsPreference;
-
-    private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
 
     protected BaseIconProvider() {
         super();
@@ -88,13 +85,14 @@ public abstract class BaseIconProvider
         String altId;
         if (altIconIdx < 1) {
             if (model.getAltIcons().length == 1) {
-                altDescription = MessageFormat.format(i18n.getString("model.desc.alternative"), model.getDescription());
+                altDescription = MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("model.desc.alternative"), model.getDescription());
             } else {
-                altDescription = MessageFormat.format(i18n.getString("model.desc.alternative.first"), model.getDescription());
+                altDescription = MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("model.desc.alternative.first"), model.getDescription());
             }
             altId = model.getId() + "_alt"; //NON-NLS
         } else {
-            altDescription = MessageFormat.format(i18n.getString("model.desc.alternative.other"), model.getDescription(), altIconIdx + 1);
+            altDescription = MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("model.desc.alternative.other"), model.getDescription(),
+                    altIconIdx + 1);
             altId = model.getId() + "_alt" + (altIconIdx + 1); //NON-NLS
         }
         return Model.createAltModel(model, altId, model.getIdeIcon(), model.getAltIcons()[altIconIdx], altDescription);
@@ -144,9 +142,9 @@ public abstract class BaseIconProvider
         }
     }
 
-    @Nullable
-    @Override // overrides FileIconProvider
-    public Icon getIcon(@NotNull VirtualFile file, int flags, @Nullable Project project) {
+    // overrides FileIconProvider
+    @Override
+    public @Nullable Icon getIcon(@NotNull VirtualFile file, int flags, @Nullable Project project) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("FileIconProvider->" + file.getPath());
         }
@@ -171,9 +169,9 @@ public abstract class BaseIconProvider
         return null;
     }
 
-    @Nullable
-    @Override // overrides IconProvider
-    public final Icon getIcon(@NotNull final PsiElement psiElement, final int flags) {
+    // overrides IconProvider
+    @Override
+    public final @Nullable Icon getIcon(final @NotNull PsiElement psiElement, final int flags) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("IconProvider->" + psiElement);
         }
@@ -228,8 +226,7 @@ public abstract class BaseIconProvider
         }
     }
 
-    @Nullable
-    private Icon getIcon(@NotNull File file, @NotNull FileType fileType, @Nullable Project project) {
+    private @Nullable Icon getIcon(@NotNull File file, @NotNull FileType fileType, @Nullable Project project) {
         this.nbGetIcon++;
         try {
             if (!ProjectUtils.isProjectAlive(project)) {
@@ -290,8 +287,7 @@ public abstract class BaseIconProvider
         }
     }
 
-    @Nullable
-    private String getFullPath(@NotNull PsiFileSystemItem file) {
+    private @Nullable String getFullPath(@NotNull PsiFileSystemItem file) {
         if (file.getVirtualFile() != null) {
             return file.getVirtualFile().getPath().toLowerCase();
         }
@@ -364,8 +360,7 @@ public abstract class BaseIconProvider
      * Returns the Project settings service if the project is not null and if the checkbox in the project settings was checked,
      * otherwise returns the IDE settings service.
      */
-    @NotNull
-    private SettingsService getBestSettingsService(@Nullable Project project) {
+    private @NotNull SettingsService getBestSettingsService(@Nullable Project project) {
         if (project != null) {
             SettingsProjectService settingsProjectService = SettingsProjectService.getInstance(project);
             if (settingsProjectService.isOverrideIDESettings()) {

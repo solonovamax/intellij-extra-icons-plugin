@@ -4,6 +4,7 @@ package lermitage.intellij.extra.icons.activity;
 
 import com.intellij.ide.projectView.ProjectView;
 import com.intellij.ide.projectView.impl.AbstractProjectViewPane;
+import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
@@ -30,36 +31,35 @@ public class RefreshIconsListenerProjectActivity implements ProjectActivity {
 
     private static final Logger LOGGER = Logger.getInstance(RefreshIconsListenerProjectActivity.class);
 
-    @Nullable
     @Override
-    public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
+    public @Nullable Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
         String projectName = project.getName();
         project.getMessageBus().connect().subscribe(RefreshIconsNotifier.EXTRA_ICONS_REFRESH_ICONS_NOTIFIER_TOPIC,
-            new RefreshIconsNotifier() {
+                new RefreshIconsNotifier() {
 
-                @Override
-                public void refreshProjectIcons(@Nullable Project project) {
-                    if (LOGGER.isDebugEnabled()) {
-                        // activate with Help > Diagnostic Tools > Debug Log Settings > #lermitage.intellij.extra.icons.RefreshIconsListenerProjectActivity
-                        LOGGER.debug("refreshProjectIcons on project: " + projectName); //NON-NLS
+                    @Override
+                    public void refreshProjectIcons(@Nullable Project project) {
+                        if (LOGGER.isDebugEnabled()) {
+                            // activate with Help > Diagnostic Tools > Debug Log Settings > #lermitage.intellij.extra.icons.RefreshIconsListenerProjectActivity
+                            LOGGER.debug("refreshProjectIcons on project: " + projectName); // NON-NLS
+                        }
+                        refreshIcons(project);
                     }
-                    refreshIcons(project);
-                }
 
-                @Override
-                public void reinitProjectIconEnablers(@Nullable Project project) {
-                    if (LOGGER.isDebugEnabled()) {
-                        // activate with Help > Diagnostic Tools > Debug Log Settings > #lermitage.intellij.extra.icons.RefreshIconsListenerProjectActivity
-                        LOGGER.debug("reinitProjectIconEnablers on project: " + projectName); //NON-NLS
+                    @Override
+                    public void reinitProjectIconEnablers(@Nullable Project project) {
+                        if (LOGGER.isDebugEnabled()) {
+                            // activate with Help > Diagnostic Tools > Debug Log Settings > #lermitage.intellij.extra.icons.RefreshIconsListenerProjectActivity
+                            LOGGER.debug("reinitProjectIconEnablers on project: " + projectName); // NON-NLS
+                        }
+                        reinitIconEnablers(project);
                     }
-                    reinitIconEnablers(project);
-                }
-            });
+                });
         return null;
     }
 
     private void reinitIconEnablers(@Nullable Project project) {
-        IJUtils.runInBGT("reinit icon enablers", () -> { //NON-NLS
+        IJUtils.runInBGT("reinit icon enablers", true, () -> { // NON-NLS
             if (ProjectUtils.isProjectAlive(project)) {
                 assert project != null;
                 DumbService.getInstance(project).runReadActionInSmartMode(() -> {
@@ -71,14 +71,16 @@ public class RefreshIconsListenerProjectActivity implements ProjectActivity {
                     }
                 });
             }
-        }, true);
+
+            return Unit.INSTANCE;
+        });
     }
 
     private void refreshIcons(@Nullable Project project) {
-        if (IJUtils.IS_IDE_2023_OR_OLDER) {
+        if (IJUtils.isIde2023OrOlder(ApplicationInfo.getInstance())) {
             IconDeferrer.getInstance().clearCache();
         }
-        IJUtils.runInEDT("refresh icons", () -> { //NON-NLS
+        IJUtils.runInEDT("refresh icons", () -> { // NON-NLS
             ApplicationManager.getApplication().runReadAction(() -> {
 
                 if (ProjectUtils.isProjectAlive(project)) {
@@ -88,17 +90,17 @@ public class RefreshIconsListenerProjectActivity implements ProjectActivity {
                     if (view != null) {
 
                         view.refresh();
-                        //IJUtils.runInBGT("refresh ProjectView", view::refresh, true); //NON-NLS
+                        // IJUtils.runInBGT("refresh ProjectView", view::refresh, true); //NON-NLS
 
                         AbstractProjectViewPane currentProjectViewPane = view.getCurrentProjectViewPane();
                         if (currentProjectViewPane != null) {
 
                             currentProjectViewPane.updateFromRoot(true);
-                            //IJUtils.runInBGT("update AbstractProjectViewPane", () -> currentProjectViewPane.updateFromRoot(true), true); //NON-NLS
+                            // IJUtils.runInBGT("update AbstractProjectViewPane", () -> currentProjectViewPane.updateFromRoot(true), true); //NON-NLS
 
                         } else {
                             if (LOGGER.isDebugEnabled()) {
-                                LOGGER.warn("Project view pane is null"); //NON-NLS
+                                LOGGER.warn("Project view pane is null"); // NON-NLS
                             }
                         }
                         try {
@@ -107,22 +109,24 @@ public class RefreshIconsListenerProjectActivity implements ProjectActivity {
                                 try {
 
                                     editorWindow.getManager().refreshIcons();
-                                    //IJUtils.runInBGT("refresh EditorWindow icons", () -> editorWindow.getManager().refreshIcons(), true); //NON-NLS
+                                    // IJUtils.runInBGT("refresh EditorWindow icons", () -> editorWindow.getManager().refreshIcons(), true); //NON-NLS
 
                                 } catch (Exception e) {
-                                    LOGGER.warn("Failed to refresh editor tabs icon (EditorWindow manager failed to refresh icons)", e); //NON-NLS
+                                    LOGGER.warn("Failed to refresh editor tabs icon (EditorWindow manager failed to refresh icons)", e); // NON-NLS
                                 }
                             }
                         } catch (Exception e) {
-                            LOGGER.warn("Failed to refresh editor tabs icon (can't get FileEditorManagerEx instance or project's windows)", e); //NON-NLS
+                            LOGGER.warn("Failed to refresh editor tabs icon (can't get FileEditorManagerEx instance or project's windows)", e); // NON-NLS
                         }
                     } else {
                         if (LOGGER.isDebugEnabled()) {
-                            LOGGER.warn("Project view is null"); //NON-NLS
+                            LOGGER.warn("Project view is null"); // NON-NLS
                         }
                     }
                 }
             });
+
+            return Unit.INSTANCE;
         });
     }
 }

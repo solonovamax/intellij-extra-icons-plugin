@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -33,8 +32,6 @@ public abstract class SettingsService {
     private Pattern ignoredPatternObj;
     private Boolean isIgnoredPatternValid;
 
-    private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
-
     private static final @NonNls Logger LOGGER = Logger.getInstance(SettingsService.class);
 
     public static final double DEFAULT_ADDITIONAL_UI_SCALE = findSysScale(); // TODO see what fits best: JBUIScale.sysScale or JBUI.pixScale. JBUI.pixScale can take a frame, which may be useful with multiple displays
@@ -49,22 +46,22 @@ public abstract class SettingsService {
     }
 
     public List<String> getDisabledModelIds() {
-        if (disabledModelIds == null) { // a malformed xml file could make it null
-            disabledModelIds = new ArrayList<>();
+        if (this.disabledModelIds == null) { // a malformed xml file could make it null
+            this.disabledModelIds = new ArrayList<>();
         }
-        return disabledModelIds;
+        return this.disabledModelIds;
     }
 
     public String getIgnoredPattern() {
-        return ignoredPattern == null ? "" : ignoredPattern;
+        return this.ignoredPattern == null ? "" : this.ignoredPattern;
     }
 
     public Pattern getIgnoredPatternObj() {
-        if (isIgnoredPatternValid == null) {
-            compileAndSetIgnoredPattern(ignoredPattern);
+        if (this.isIgnoredPatternValid == null) {
+            compileAndSetIgnoredPattern(this.ignoredPattern);
         }
-        if (isIgnoredPatternValid == Boolean.TRUE) {
-            return ignoredPatternObj;
+        if (this.isIgnoredPatternValid == Boolean.TRUE) {
+            return this.ignoredPatternObj;
         }
         return null;
     }
@@ -79,43 +76,42 @@ public abstract class SettingsService {
     }
 
     public List<Model> getCustomModels() {
-        if (customModels == null) { // a malformed xml file could make it null
-            customModels = new ArrayList<>();
+        if (this.customModels == null) { // a malformed xml file could make it null
+            this.customModels = new ArrayList<>();
         }
-        return customModels;
+        return this.customModels;
     }
 
     public void setCustomModels(List<Model> customModels) {
         this.customModels = customModels;
     }
 
-    @NotNull
-    public static List<Model> getAllRegisteredModels() {
+    public static @NotNull List<Model> getAllRegisteredModels() {
         return ExtraIconProvider.allModels();
     }
 
     private void compileAndSetIgnoredPattern(String regex) {
         if (regex != null && !regex.isEmpty()) {
             try {
-                ignoredPatternObj = Pattern.compile(regex);
-                isIgnoredPatternValid = true;
+                this.ignoredPatternObj = Pattern.compile(regex);
+                this.isIgnoredPatternValid = true;
             } catch (PatternSyntaxException e) {
                 NotificationGroupManager.getInstance().getNotificationGroup(Globals.PLUGIN_GROUP_DISPLAY_ID)
                     .createNotification(
                         MessageFormat.format(
-                            i18n.getString("notification.content.cant.compile.regex"),
+                                I18nUtils.RESOURCE_BUNDLE.getString("notification.content.cant.compile.regex"),
                             regex,
                             e.getMessage()),
                         NotificationType.WARNING)
                     .setTitle(
                         MessageFormat.format(
-                            i18n.getString("notification.content.cant.compile.regex.title"),
-                            i18n.getString("extra.icons.plugin")))
-                    .setSubtitle(i18n.getString("notification.content.cant.compile.regex.subtitle"))
+                                I18nUtils.RESOURCE_BUNDLE.getString("notification.content.cant.compile.regex.title"),
+                                I18nUtils.RESOURCE_BUNDLE.getString("extra.icons.plugin")))
+                        .setSubtitle(I18nUtils.RESOURCE_BUNDLE.getString("notification.content.cant.compile.regex.subtitle"))
                     .setImportant(true)
                     .notify(null);
-                ignoredPatternObj = null;
-                isIgnoredPatternValid = false;
+                this.ignoredPatternObj = null;
+                this.isIgnoredPatternValid = false;
             }
         }
     }

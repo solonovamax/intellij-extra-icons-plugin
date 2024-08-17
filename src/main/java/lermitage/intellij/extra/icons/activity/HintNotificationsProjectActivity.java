@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * Display some useful hints in notifications on startup, a single time only.
@@ -35,11 +34,8 @@ public class HintNotificationsProjectActivity implements ProjectActivity {
 
     private static final @NonNls Logger LOGGER = Logger.getInstance(HintNotificationsProjectActivity.class);
 
-    private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
-
-    @Nullable
     @Override
-    public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
+    public @Nullable Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
         if (!ProjectUtils.isProjectAlive(project)) {
             LOGGER.info(this.getClass().getName() + " started before project is ready. Will not show startup notifications this time");
             return null;
@@ -51,10 +47,10 @@ public class HintNotificationsProjectActivity implements ProjectActivity {
         try {
             if (!settingsIDEService.getPluginIsConfigurableHintNotifDisplayed() || alwaysShowNotifications) {
                 Notification notif = new Notification(Globals.PLUGIN_GROUP_DISPLAY_ID,
-                    i18n.getString("notif.tips.plugin.config.title"),
-                    i18n.getString("notif.tips.plugin.config.content"),
+                        I18nUtils.RESOURCE_BUNDLE.getString("notif.tips.plugin.config.title"),
+                        I18nUtils.RESOURCE_BUNDLE.getString("notif.tips.plugin.config.content"),
                     NotificationType.INFORMATION);
-                notif.addAction(new NotificationAction(i18n.getString("notif.tips.plugin.config.btn")) {
+                notif.addAction(new NotificationAction(I18nUtils.RESOURCE_BUNDLE.getString("notif.tips.plugin.config.btn")) {
                     @Override
                     public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
                         ShowSettingsUtil.getInstance().showSettingsDialog(project, SettingsForm.class);
@@ -72,10 +68,10 @@ public class HintNotificationsProjectActivity implements ProjectActivity {
                     List<String> disabledModelIds = settingsIDEService.getDisabledModelIds();
                     if (!disabledModelIds.contains("ext_svg") || !disabledModelIds.contains("ext_svg_alt")) { //NON-NLS
                         Notification notif = new Notification(Globals.PLUGIN_GROUP_DISPLAY_ID,
-                            i18n.getString("notif.tips.plugin.config.title"),
-                            i18n.getString("notif.tips.iconviewer.should.render.svg"),
+                                I18nUtils.RESOURCE_BUNDLE.getString("notif.tips.plugin.config.title"),
+                                I18nUtils.RESOURCE_BUNDLE.getString("notif.tips.iconviewer.should.render.svg"),
                             NotificationType.INFORMATION);
-                        notif.addAction(new NotificationAction(i18n.getString("notif.tips.iconviewer.should.render.svg.accept.btn")) {
+                        notif.addAction(new NotificationAction(I18nUtils.RESOURCE_BUNDLE.getString("notif.tips.iconviewer.should.render.svg.accept.btn")) {
                             @Override
                             public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
                                 disabledModelIds.add("ext_svg"); //NON-NLS
@@ -83,8 +79,8 @@ public class HintNotificationsProjectActivity implements ProjectActivity {
                                 settingsIDEService.setDisabledModelIds(disabledModelIds);
                                 RefreshIconsNotifierService.getInstance().triggerAllIconsRefreshAndIconEnablersReinit();
                                 Messages.showInfoMessage(
-                                    i18n.getString("configured.iconviewer.for.svg.rendering"),
-                                    i18n.getString("configured.iconviewer.for.svg.rendering.title")
+                                        I18nUtils.RESOURCE_BUNDLE.getString("configured.iconviewer.for.svg.rendering"),
+                                        I18nUtils.RESOURCE_BUNDLE.getString("configured.iconviewer.for.svg.rendering.title")
                                 );
                                 notif.hideBalloon();
                                 notif.expire();

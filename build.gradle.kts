@@ -7,6 +7,7 @@ import groovy.lang.Closure
 import org.apache.commons.io.FileUtils
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.w3c.dom.Document
 import java.io.BufferedReader
 import java.io.ByteArrayInputStream
@@ -27,12 +28,10 @@ plugins {
     id("com.palantir.git-version") version "3.0.0" // https://github.com/palantir/gradle-git-version
     id("com.github.andygoossens.modernizer") version "1.9.0" // https://github.com/andygoossens/gradle-modernizer-plugin
     id("biz.lermitage.oga") version "1.1.1" // https://github.com/jonathanlermitage/oga-gradle-plugin
+    kotlin("jvm") version "1.9.25"
 }
 
 // TODO: Make this buildscript significantly less awful
-val pluginXmlFile = projectDir.resolve("src/main/resources/META-INF/plugin.xml")
-val pluginXmlFileBackup = projectDir.resolve("plugin.backup.xml")
-
 // Import variables from gradle.properties file
 val pluginDownloadIdeaSources: String by project
 val pluginVersion: String by project
@@ -46,6 +45,12 @@ val pluginClearSandboxedIDESystemLogsBeforeRun: String by project
 val pluginIdeaVersion = detectBestIdeVersion()
 val pluginFreeId: String by project
 val pluginFreeName: String by project
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget(pluginJavaVersion)
+    }
+}
 
 version = if (pluginVersion == "auto") {
     val versionDetails: Closure<VersionDetails> by extra
@@ -71,7 +76,7 @@ repositories {
     }
 }
 
-val junitVersion = "5.10.1"
+val junitVersion = "4.13.2"
 val junitPlatformLauncher = "1.10.1"
 val archunitVersion = "1.2.1"
 
@@ -81,8 +86,9 @@ dependencies {
     implementation("commons-codec:commons-codec:1.16.0")
     implementation("commons-io:commons-io:2.15.1")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("junit:junit:$junitVersion")
+    // testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    // testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitPlatformLauncher")
     testImplementation("com.tngtech.archunit:archunit:$archunitVersion")
     testImplementation("com.github.weisj:jsvg:1.3.0")
@@ -149,7 +155,7 @@ tasks {
         options.encoding = "UTF-8"
     }
     withType<Test> {
-        useJUnitPlatform()
+        useJUnit()
 
         // avoid JBUIScale "Must be precomputed" error, because IDE is not started (LoadingState.APP_STARTED.isOccurred is false)
         jvmArgs("-Djava.awt.headless=true")
@@ -236,7 +242,7 @@ fun shortenIdeVersion(version: String): String {
     return try {
         matcher.findAll(version).map { it.value }.toList()[0]
     } catch (e: Exception) {
-        logger.warn("Failed to shorten IDE version $version: ${e.message}")
+        // logger.warn("Failed to shorten IDE version $version: ${e.message}")
         version
     }
 }

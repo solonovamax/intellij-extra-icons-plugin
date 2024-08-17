@@ -7,13 +7,9 @@ import lermitage.intellij.extra.icons.Model;
 import lermitage.intellij.extra.icons.utils.I18nUtils;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
@@ -27,33 +23,31 @@ public class IconPackUninstallerDialog extends DialogWrapper {
     private JLabel iconPackChooserTitleLabel;
     private JComboBox<String> iconPackComboBox;
 
-    private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
-
     @Override
     protected @Nullable JComponent createCenterPanel() {
-        return pane;
+        return this.pane;
     }
 
     public IconPackUninstallerDialog(List<Model> models) {
         super(true);
         this.models = models;
         init();
-        setTitle(i18n.getString("model.dialog.uninstall.icon.pack.window.title"));
+        setTitle(I18nUtils.RESOURCE_BUNDLE.getString("model.dialog.uninstall.icon.pack.window.title"));
         initComponents();
     }
 
     private void initComponents() {
-        iconPackChooserTitleLabel.setText(i18n.getString("model.dialog.uninstall.icon.pack.title"));
+        this.iconPackChooserTitleLabel.setText(I18nUtils.RESOURCE_BUNDLE.getString("model.dialog.uninstall.icon.pack.title"));
         Set<String> iconPacks = new HashSet<>();
-        models.forEach(model -> {
+        this.models.forEach(model -> {
             if (model.getIconPack() != null && !model.getIconPack().isBlank()) {
                 iconPacks.add(model.getIconPack());
             }
         });
-        iconPacks.stream().sorted().forEach(s -> iconPackComboBox.addItem(s));
+        iconPacks.stream().sorted().forEach(s -> this.iconPackComboBox.addItem(s));
     }
 
     public String getIconPackNameFromInput() {
-        return iconPackComboBox.getItemAt(iconPackComboBox.getSelectedIndex());
+        return this.iconPackComboBox.getItemAt(this.iconPackComboBox.getSelectedIndex());
     }
 }

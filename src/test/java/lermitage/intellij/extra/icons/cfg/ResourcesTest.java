@@ -12,11 +12,10 @@ import com.intellij.openapi.diagnostic.LogLevel;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.ui.ImageUtil;
 import lermitage.intellij.extra.icons.ExtraIconProvider;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -30,9 +29,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @SuppressWarnings("HardCodedStringLiteral")
 public class ResourcesTest {
@@ -41,8 +40,8 @@ public class ResourcesTest {
     static List<File> svgIcons;
     static List<File> pngIcons;
 
-    @BeforeAll
-    static void setUp() {
+    @Before
+    public void setUp() {
         Logger.getFactory().getLoggerInstance(AsynchronousResourceLoader.class.getName()).setLevel(LogLevel.OFF);
         Logger.getFactory().getLoggerInstance(ResourceUtil.class.getName()).setLevel(LogLevel.OFF);
         Logger.getFactory().getLoggerInstance(StaxSVGLoader.class.getName()).setLevel(LogLevel.OFF);
@@ -50,17 +49,17 @@ public class ResourcesTest {
 
         icons = new ArrayList<>();
         List<File> iconsFolders = Arrays.asList(
-            new File("src/main/resources/extra-icons/"),
-            new File("src/main/resources/extra-icons/ide/"),
-            new File("src/main/resources/extra-icons/officedocs/"),
-            new File("src/main/resources/extra-icons/newui/"),
-            new File("src/main/resources/extra-icons/newui/ide/"),
-            new File("src/test/resources/issue141/"));
+                new File("src/main/resources/extra-icons/"),
+                new File("src/main/resources/extra-icons/ide/"),
+                new File("src/main/resources/extra-icons/officedocs/"),
+                new File("src/main/resources/extra-icons/newui/"),
+                new File("src/main/resources/extra-icons/newui/ide/"),
+                new File("src/test/resources/issue141/"));
         iconsFolders.forEach(iconsFolder -> {
             assertTrue(iconsFolder.exists());
             assertTrue(iconsFolder.isDirectory());
             icons.addAll(Arrays.asList(Objects.requireNonNull(
-                iconsFolder.listFiles((dir, name) -> name.endsWith(".png") || name.endsWith(".svg"))
+                    iconsFolder.listFiles((dir, name) -> name.endsWith(".png") || name.endsWith(".svg"))
             )));
         });
         pngIcons = icons.stream().filter(file -> file.getName().endsWith(".png")).collect(Collectors.toList());
@@ -73,23 +72,23 @@ public class ResourcesTest {
     @Test
     public void icons_should_not_exist_as_svg_and_png() {
         Set<String> pngIconNames = pngIcons.stream()
-            .map(file -> file.getName().replace(".png", ""))
-            .collect(Collectors.toSet());
+                .map(file -> file.getName().replace(".png", ""))
+                .collect(Collectors.toSet());
 
         for (File svgIcon : svgIcons) {
             String svgIconName = svgIcon.getName().replace(".svg", "");
-            assertFalse(pngIconNames.contains(svgIconName), svgIconName);
-            assertFalse(pngIconNames.contains(svgIconName + "_dark"), svgIconName);
-            assertFalse(pngIconNames.contains(svgIconName + "@2x"), svgIconName);
-            assertFalse(pngIconNames.contains(svgIconName + "@2x_dark"), svgIconName);
+            assertFalse(svgIconName, pngIconNames.contains(svgIconName));
+            assertFalse(svgIconName, pngIconNames.contains(svgIconName + "_dark"));
+            assertFalse(svgIconName, pngIconNames.contains(svgIconName + "@2x"));
+            assertFalse(svgIconName, pngIconNames.contains(svgIconName + "@2x_dark"));
         }
     }
 
     @Test
     public void png_icons_should_have_2x_definition() {
         Set<String> pngIconNames = pngIcons.stream()
-            .map(file -> file.getName().replace(".png", ""))
-            .collect(Collectors.toSet());
+                .map(file -> file.getName().replace(".png", ""))
+                .collect(Collectors.toSet());
         List<String> errors = new ArrayList<>();
 
         for (String icon : pngIconNames) {
@@ -123,8 +122,8 @@ public class ResourcesTest {
     @Test
     public void dark_icon_should_be_coupled_with_light_icon() {
         Set<String> iconNames = icons.stream()
-            .map(File::getName)
-            .collect(Collectors.toSet());
+                .map(File::getName)
+                .collect(Collectors.toSet());
         List<String> errors = new ArrayList<>();
 
         for (String icon : iconNames) {
@@ -150,7 +149,7 @@ public class ResourcesTest {
                     errors.add(file.getName());
                 }
             } catch (IOException e) {
-                fail(e);
+                throw new RuntimeException(e);
             }
         });
         if (!errors.isEmpty()) {
@@ -169,11 +168,11 @@ public class ResourcesTest {
                 removableAttributes.forEach(removableAttribute -> {
                     if (fileContent.contains(removableAttribute)) {
                         errors.add(file.getName() + ": removable element or attribute is '" + removableAttribute + "'. " +
-                            "You can safely remove this attribute from file");
+                                   "You can safely remove this attribute from file");
                     }
                 });
             } catch (IOException e) {
-                fail(e);
+                throw new RuntimeException(e);
             }
         });
         if (!errors.isEmpty()) {
@@ -203,7 +202,7 @@ public class ResourcesTest {
                     errors.add(file.getName() + ": can't be loaded by JSVG. Loaded SVGDocument is null");
                 } else {
                     FloatSize size = svgDocument.size();
-                    BufferedImage image = ImageUtil.createImage((int) size.width, (int) size.height, BufferedImage.TYPE_INT_ARGB);
+                    BufferedImage image = ImageUtil.createImage((int) size.getWidth(), (int) size.getHeight(), BufferedImage.TYPE_INT_ARGB);
                     Graphics2D graphics = image.createGraphics();
                     svgDocument.render(null, graphics);
                     Image thumbnail = ImageUtil.scaleImage(image, 1.25f);
@@ -225,11 +224,11 @@ public class ResourcesTest {
         List<String> errors = new ArrayList<>();
 
         List<String> iconNames = icons.stream()
-            .map(file -> {
-                String relativePath = file.getAbsolutePath().replaceAll("\\\\", "/");
-                relativePath = relativePath.substring(relativePath.lastIndexOf("/extra-icons/") + "/extra-icons/".length());
-                return relativePath;
-            }).toList();
+                .map(file -> {
+                    String relativePath = file.getAbsolutePath().replaceAll("\\\\", "/");
+                    relativePath = relativePath.substring(relativePath.lastIndexOf("/extra-icons/") + "/extra-icons/".length());
+                    return relativePath;
+                }).toList();
         ExtraIconProvider.allModels().forEach(model -> {
             String extraIconName = model.getIcon().replace("extra-icons/", "");
             if (!iconNames.contains(extraIconName)) {
@@ -247,12 +246,12 @@ public class ResourcesTest {
         List<String> errors = new ArrayList<>();
 
         List<String> newUIIconNamesWithParentDir = icons.stream()
-            .filter(file -> file.getAbsolutePath().contains("newui"))
-            .map(file -> {
-                String relativePath = file.getAbsolutePath().replaceAll("\\\\", "/");
-                relativePath = relativePath.substring(relativePath.lastIndexOf("/extra-icons/") + "/extra-icons/".length());
-                return relativePath;
-            }).toList();
+                .filter(file -> file.getAbsolutePath().contains("newui"))
+                .map(file -> {
+                    String relativePath = file.getAbsolutePath().replaceAll("\\\\", "/");
+                    relativePath = relativePath.substring(relativePath.lastIndexOf("/extra-icons/") + "/extra-icons/".length());
+                    return relativePath;
+                }).toList();
         ExtraIconProvider.allModels().forEach(model -> {
             String newUIIconName = "newui/" + model.getIcon().replace("extra-icons/", "");
             if (model.isAutoLoadNewUIIconVariant()) {
@@ -281,7 +280,7 @@ public class ResourcesTest {
             if (model.getIdeIcon() != null) {
                 if (model.getIcon().endsWith(model.getIdeIcon())) {
                     errors.add(model.getId() + " IDE model's icon " + model.getIdeIcon() + " and custom icon "
-                        + model.getIcon() + " should be different");
+                               + model.getIcon() + " should be different");
                 }
             }
         });

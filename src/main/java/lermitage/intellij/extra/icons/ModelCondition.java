@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -62,10 +61,8 @@ public class ModelCondition {
 
     // transient fields are excluded from IconPack items
 
-    private transient Pattern pattern; // transient because computed dynamically
-    private transient IconEnablerType iconEnablerType; // transient because not exposed to user models
-
-    private static final ResourceBundle i18n = I18nUtils.getResourceBundle();
+    private Pattern pattern; // transient because computed dynamically
+    private IconEnablerType iconEnablerType; // transient because not exposed to user models
 
     public void setParents(String... parents) {
         this.checkParent = true;
@@ -117,18 +114,18 @@ public class ModelCondition {
     }
 
     public boolean check(String parentName, String fileName, @Nullable String fullPath, Set<String> prjFacets, Project project) {
-        if (!enabled) {
+        if (!this.enabled) {
             return false;
         }
 
-        if (isInProjectRootFolder) {
+        if (this.isInProjectRootFolder) {
             if (fullPath == null || !fullPath.equalsIgnoreCase(project.getBasePath() + "/" + fileName)) {
                 return false;
             }
         }
 
-        if (hasIconEnabler && fullPath != null) {
-            Optional<IconEnabler> iconEnabler = IconEnablerProvider.getIconEnabler(project, iconEnablerType);
+        if (this.hasIconEnabler && fullPath != null) {
+            Optional<IconEnabler> iconEnabler = IconEnablerProvider.getIconEnabler(project, this.iconEnablerType);
             if (iconEnabler.isPresent()) {
                 boolean iconEnabledVerified = iconEnabler.get().verify(project, fullPath);
                 if (!iconEnabledVerified) {
@@ -140,9 +137,9 @@ public class ModelCondition {
         }
 
         // facet is a pre-condition, should always be associated with other conditions
-        if (checkFacets && facets != null) {
+        if (this.checkFacets && this.facets != null) {
             boolean facetChecked = false;
-            for (String modelFacet : facets) {
+            for (String modelFacet : this.facets) {
                 if (prjFacets.contains(modelFacet)) {
                     facetChecked = true;
                     break;
@@ -153,49 +150,49 @@ public class ModelCondition {
             }
         }
 
-        if (checkParent) {
-            if (!(start || eq || end || mayEnd)) {
-                if (parentNames.contains(parentName)) {
+        if (this.checkParent) {
+            if (!(this.start || this.eq || this.end || this.mayEnd)) {
+                if (this.parentNames.contains(parentName)) {
                     return true; // To style all files in a subdirectory
                 }
             } else {
-                if (!parentNames.contains(parentName)) {
+                if (!this.parentNames.contains(parentName)) {
                     return false;
                 }
             }
         }
 
-        if (hasRegex && fullPath != null) {
-            if (pattern == null) {
-                pattern = Pattern.compile(regex);
+        if (this.hasRegex && fullPath != null) {
+            if (this.pattern == null) {
+                this.pattern = Pattern.compile(this.regex);
             }
-            if (pattern.matcher(fullPath).matches()) {
+            if (this.pattern.matcher(fullPath).matches()) {
                 return true;
             }
         }
 
-        if (eq) {
-            if (end) {
-                for (String n : names) {
-                    for (String e : extensions) {
+        if (this.eq) {
+            if (this.end) {
+                for (String n : this.names) {
+                    for (String e : this.extensions) {
                         if (fileName.equals(n + e)) {
                             return true;
                         }
                     }
                 }
-            } else if (mayEnd) {
-                for (String n : names) {
+            } else if (this.mayEnd) {
+                for (String n : this.names) {
                     if (fileName.equals(n)) {
                         return true;
                     }
-                    for (String e : extensions) {
+                    for (String e : this.extensions) {
                         if (fileName.equals(n + e)) {
                             return true;
                         }
                     }
                 }
             } else {
-                for (String n : names) {
+                for (String n : this.names) {
                     if (fileName.equals(n)) {
                         return true;
                     }
@@ -203,34 +200,34 @@ public class ModelCondition {
             }
         }
 
-        if (start) {
-            if (end) {
-                for (String n : names) {
-                    for (String e : extensions) {
+        if (this.start) {
+            if (this.end) {
+                for (String n : this.names) {
+                    for (String e : this.extensions) {
                         if (fileName.startsWith(n) && fileName.endsWith(e)) {
                             return true;
                         }
                     }
                 }
-            } else if (mayEnd) {
-                for (String n : names) {
+            } else if (this.mayEnd) {
+                for (String n : this.names) {
                     if (fileName.startsWith(n)) {
                         return true;
                     }
-                    for (String e : extensions) {
+                    for (String e : this.extensions) {
                         if (fileName.startsWith(n) && fileName.endsWith(e)) {
                             return true;
                         }
                     }
                 }
-            } else if (noDot) {
-                for (String n : names) {
+            } else if (this.noDot) {
+                for (String n : this.names) {
                     if (fileName.startsWith(n) && !fileName.contains(".")) {
                         return true;
                     }
                 }
             } else {
-                for (String n : names) {
+                for (String n : this.names) {
                     if (fileName.startsWith(n)) {
                         return true;
                     }
@@ -238,8 +235,8 @@ public class ModelCondition {
             }
         }
 
-        if (end & !eq & !start) {
-            for (String e : extensions) {
+        if (this.end & !this.eq & !this.start) {
+            for (String e : this.extensions) {
                 if (fileName.endsWith(e)) {
                     return true;
                 }
@@ -250,63 +247,63 @@ public class ModelCondition {
     }
 
     public boolean hasStart() {
-        return start;
+        return this.start;
     }
 
     public boolean hasEq() {
-        return eq;
+        return this.eq;
     }
 
     public boolean hasMayEnd() {
-        return mayEnd;
+        return this.mayEnd;
     }
 
     public boolean hasEnd() {
-        return end;
+        return this.end;
     }
 
     public boolean hasNoDot() {
-        return noDot;
+        return this.noDot;
     }
 
     public boolean hasCheckParent() {
-        return checkParent;
+        return this.checkParent;
     }
 
     public boolean hasRegex() {
-        return hasRegex;
+        return this.hasRegex;
     }
 
     public boolean hasFacets() {
-        return checkFacets;
+        return this.checkFacets;
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
 
     public boolean isValid() {
-        return hasRegex || checkParent || start || eq || end || mayEnd;
+        return this.hasRegex || this.checkParent || this.start || this.eq || this.end || this.mayEnd;
     }
 
     public String[] getNames() {
-        return names;
+        return this.names;
     }
 
     public String[] getExtensions() {
-        return extensions;
+        return this.extensions;
     }
 
     public Set<String> getParents() {
-        return parentNames;
+        return this.parentNames;
     }
 
     public String getRegex() {
-        return regex;
+        return this.regex;
     }
 
     public String[] getFacets() {
-        return facets;
+        return this.facets;
     }
 
     public void setEnabled(boolean enabled) {
@@ -315,39 +312,39 @@ public class ModelCondition {
 
     public String asReadableString(String delimiter) {
         ArrayList<String> parameters = new ArrayList<>();
-        if (hasRegex) {
-            parameters.add(MessageFormat.format(i18n.getString("model.condition.regex"), this.regex));
+        if (this.hasRegex) {
+            parameters.add(MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("model.condition.regex"), this.regex));
         }
 
-        if (checkParent) {
-            parameters.add(MessageFormat.format(i18n.getString("model.condition.check.parents"), String.join(delimiter, this.parentNames)));
+        if (this.checkParent) {
+            parameters.add(MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("model.condition.check.parents"), String.join(delimiter, this.parentNames)));
         }
 
-        if (start || eq) {
+        if (this.start || this.eq) {
             String names = String.join(delimiter, this.names);
-            if (start) {
-                names = MessageFormat.format(i18n.getString("model.condition.name.starts.with"), names);
-                if (noDot) {
-                    names += i18n.getString("model.condition.name.starts.with.and.no.dot");
+            if (this.start) {
+                names = MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("model.condition.name.starts.with"), names);
+                if (this.noDot) {
+                    names += I18nUtils.RESOURCE_BUNDLE.getString("model.condition.name.starts.with.and.no.dot");
                 }
             } else {
-                names = MessageFormat.format(i18n.getString("model.condition.name.equals"), names);
+                names = MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("model.condition.name.equals"), names);
             }
             parameters.add(names);
         }
 
-        if (mayEnd || end) {
+        if (this.mayEnd || this.end) {
             String extensions = String.join(delimiter, this.extensions);
-            if (mayEnd) {
-                extensions = MessageFormat.format(i18n.getString("model.condition.name.may.end.with"), extensions);
+            if (this.mayEnd) {
+                extensions = MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("model.condition.name.may.end.with"), extensions);
             } else {
-                extensions = MessageFormat.format(i18n.getString("model.condition.name.ends.with"), extensions);
+                extensions = MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("model.condition.name.ends.with"), extensions);
             }
             parameters.add(extensions);
         }
 
-        if (checkFacets) {
-            parameters.add(MessageFormat.format(i18n.getString("model.condition.facets"), Arrays.toString(this.facets)));
+        if (this.checkFacets) {
+            parameters.add(MessageFormat.format(I18nUtils.RESOURCE_BUNDLE.getString("model.condition.facets"), Arrays.toString(this.facets)));
         }
 
         return StringUtil.capitalize(String.join(", ", parameters));
@@ -358,27 +355,27 @@ public class ModelCondition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ModelCondition that = (ModelCondition) o;
-        return start == that.start &&
-            eq == that.eq &&
-            mayEnd == that.mayEnd &&
-            end == that.end &&
-            noDot == that.noDot &&
-            checkParent == that.checkParent &&
-            hasRegex == that.hasRegex &&
-            enabled == that.enabled &&
-            Arrays.equals(names, that.names) &&
-            parentNames.equals(that.parentNames) &&
-            Arrays.equals(extensions, that.extensions) &&
-            Objects.equals(regex, that.regex) &&
-            Arrays.equals(facets, that.facets);
+        return this.start == that.start &&
+               this.eq == that.eq &&
+               this.mayEnd == that.mayEnd &&
+               this.end == that.end &&
+               this.noDot == that.noDot &&
+               this.checkParent == that.checkParent &&
+               this.hasRegex == that.hasRegex &&
+               this.enabled == that.enabled &&
+               Arrays.equals(this.names, that.names) &&
+               this.parentNames.equals(that.parentNames) &&
+               Arrays.equals(this.extensions, that.extensions) &&
+               Objects.equals(this.regex, that.regex) &&
+               Arrays.equals(this.facets, that.facets);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(start, eq, mayEnd, end, noDot, checkParent, hasRegex, enabled, parentNames, regex);
-        result = 31 * result + Arrays.hashCode(names);
-        result = 31 * result + Arrays.hashCode(extensions);
-        result = 31 * result + Arrays.hashCode(facets);
+        int result = Objects.hash(this.start, this.eq, this.mayEnd, this.end, this.noDot, this.checkParent, this.hasRegex, this.enabled, this.parentNames, this.regex);
+        result = 31 * result + Arrays.hashCode(this.names);
+        result = 31 * result + Arrays.hashCode(this.extensions);
+        result = 31 * result + Arrays.hashCode(this.facets);
         return result;
     }
 

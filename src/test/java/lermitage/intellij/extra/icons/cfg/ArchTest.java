@@ -6,7 +6,7 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 @SuppressWarnings("HardCodedStringLiteral")
 public class ArchTest {
@@ -28,7 +28,7 @@ public class ArchTest {
     }
 
     @Test
-    void should_not_depend_on_JDK_internals() {
+    public void should_not_depend_on_JDK_internals() {
         ArchRuleDefinition.classes()
             .should().onlyAccessClassesThat().resideOutsideOfPackages("com.sun..", "sun..")
             .check(PROJECT);
