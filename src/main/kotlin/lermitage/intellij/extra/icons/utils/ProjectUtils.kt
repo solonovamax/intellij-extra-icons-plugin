@@ -3,11 +3,11 @@
 
 package lermitage.intellij.extra.icons.utils
 
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.diagnostic.fileLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 
-val LOGGER = Logger.getInstance("#lermitage.intellij.extra.icons.utils.ProjectUtils")
+private val LOGGER = fileLogger()
 
 val ProjectManager.firstOpenedProject: Project?
     get() = openProjects.firstOrNull()

@@ -24,8 +24,6 @@ import lermitage.intellij.extra.icons.utils.ProjectUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 // TODO migrate to Listener https://plugins.jetbrains.com/docs/intellij/plugin-listeners.html#defining-project-level-listeners
 public class RefreshIconsListenerProjectActivity implements ProjectActivity {
 
@@ -65,8 +63,9 @@ public class RefreshIconsListenerProjectActivity implements ProjectActivity {
                 DumbService.getInstance(project).runReadActionInSmartMode(() -> {
                     for (IconEnablerType iconEnablerType : IconEnablerType.values()) {
                         if (ProjectUtils.isProjectAlive(project)) {
-                            Optional<IconEnabler> iconEnabler = IconEnablerProvider.getIconEnabler(project, iconEnablerType);
-                            iconEnabler.ifPresent(enabler -> enabler.init(project));
+                            IconEnabler iconEnabler = IconEnablerProvider.getIconEnabler(project, iconEnablerType);
+                            if (iconEnabler != null)
+                                iconEnabler.init(project);
                         }
                     }
                 });

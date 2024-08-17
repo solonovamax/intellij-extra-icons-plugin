@@ -7,11 +7,11 @@ import com.intellij.ide.plugins.PluginManagerCore.getPlugin
 import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.diagnostic.fileLogger
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.util.ui.EDT
 
-private val IJLOGGER: Logger = Logger.getInstance("#lermitage.intellij.extra.icons.utils.IJUtils")
+private val IJLOGGER = fileLogger()
 
 /**
  * Indicate if plugin

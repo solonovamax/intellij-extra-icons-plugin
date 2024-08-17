@@ -13,6 +13,7 @@ import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
+import lermitage.intellij.extra.icons.enablers.IconEnabler;
 import lermitage.intellij.extra.icons.enablers.IconEnablerProvider;
 import lermitage.intellij.extra.icons.enablers.IconEnablerType;
 import lermitage.intellij.extra.icons.enablers.services.GitSubmoduleFolderEnablerService;
@@ -27,9 +28,8 @@ public class VFSChangesListenersProjectActivity implements ProjectActivity {
 
     private static final Logger LOGGER = Logger.getInstance(VFSChangesListenersProjectActivity.class);
 
-    @Nullable
     @Override
-    public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
+    public @Nullable Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
         project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, new BulkFileListener() {
             @Override
             public void after(@NotNull List<? extends @NotNull VFileEvent> events) {
@@ -51,9 +51,9 @@ public class VFSChangesListenersProjectActivity implements ProjectActivity {
                         && vFileEvent.getPath().endsWith(GitSubmoduleFolderEnablerService.GIT_MODULES_FILENAME)
                     );
                 if (gitmodulesUpdated) {
-                    IconEnablerProvider.getIconEnabler(project, IconEnablerType.IS_GIT_SUBMODULE_FOLDER).ifPresent(iconEnabler ->
-                        iconEnabler.init(project)
-                    );
+                    IconEnabler iconEnabler = IconEnablerProvider.getIconEnabler(project, IconEnablerType.IS_GIT_SUBMODULE_FOLDER);
+                    if (iconEnabler != null)
+                        iconEnabler.init(project);
                     RefreshIconsNotifierService.getInstance().triggerProjectIconsRefresh(project);
                 }
             });

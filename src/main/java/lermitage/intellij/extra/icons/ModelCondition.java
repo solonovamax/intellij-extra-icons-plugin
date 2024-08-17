@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -125,12 +124,12 @@ public class ModelCondition {
         }
 
         if (this.hasIconEnabler && fullPath != null) {
-            Optional<IconEnabler> iconEnabler = IconEnablerProvider.getIconEnabler(project, this.iconEnablerType);
-            if (iconEnabler.isPresent()) {
-                boolean iconEnabledVerified = iconEnabler.get().verify(project, fullPath);
+            IconEnabler iconEnabler = IconEnablerProvider.getIconEnabler(project, this.iconEnablerType);
+            if (iconEnabler != null) {
+                boolean iconEnabledVerified = iconEnabler.verify(project, fullPath);
                 if (!iconEnabledVerified) {
                     return false;
-                } else if (iconEnabler.get().terminatesConditionEvaluation()) {
+                } else if (iconEnabler.terminatesConditionEvaluation()) {
                     return true;
                 }
             }

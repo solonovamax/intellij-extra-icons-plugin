@@ -4,7 +4,7 @@
 package lermitage.intellij.extra.icons.utils
 
 import com.intellij.core.rwmutex.ReadCancellationException
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.diagnostic.fileLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.NewUI
@@ -18,7 +18,6 @@ import lermitage.intellij.extra.icons.UITypeIconsPreference
 import lermitage.intellij.extra.icons.cfg.services.SettingsService
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
-import org.jetbrains.annotations.NonNls
 import java.awt.Image
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -27,7 +26,7 @@ import java.util.UUID
 import javax.imageio.ImageIO
 import javax.swing.Icon
 
-private val ICON_LOGGER: @NonNls Logger = Logger.getInstance("#lermitage.intellij.extra.icons.utils.IconUtils")
+private val ICON_LOGGER = fileLogger()
 
 private const val SCALING_SIZE = 16
 

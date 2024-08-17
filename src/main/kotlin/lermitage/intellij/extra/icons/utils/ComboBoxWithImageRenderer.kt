@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 package lermitage.intellij.extra.icons.utils
 
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.diagnostic.thisLogger
 import lermitage.intellij.extra.icons.ExtraIcons
-import org.jetbrains.annotations.NonNls
 import java.awt.Component
 import javax.swing.Icon
 import javax.swing.ImageIcon
@@ -74,8 +73,6 @@ class ComboBoxWithImageRenderer : JLabel(), ListCellRenderer<Any?> {
     }
 
     companion object {
-        private val LOGGER: @NonNls Logger = Logger.getInstance(
-            ComboBoxWithImageRenderer::class.java
-        )
+        private val LOGGER = thisLogger()
     }
 }

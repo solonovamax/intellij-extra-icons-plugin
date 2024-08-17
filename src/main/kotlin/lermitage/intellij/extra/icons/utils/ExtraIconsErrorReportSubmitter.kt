@@ -7,8 +7,8 @@ import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.diagnostic.ErrorReportSubmitter
 import com.intellij.openapi.diagnostic.IdeaLoggingEvent
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.diagnostic.SubmittedReportInfo
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.util.NlsActions.ActionText
 import com.intellij.openapi.util.SystemInfo
@@ -140,7 +140,7 @@ class ExtraIconsErrorReportSubmitter : ErrorReportSubmitter() {
     }
 
     companion object {
-        private val LOGGER: Logger = Logger.getInstance(ExtraIconsErrorReportSubmitter::class.java)
+        private val LOGGER = thisLogger()
         private const val BUG_TEMPLATE: String = """
             ## Running environment
             - Extra Icons plugin version - %pluginVersion%
