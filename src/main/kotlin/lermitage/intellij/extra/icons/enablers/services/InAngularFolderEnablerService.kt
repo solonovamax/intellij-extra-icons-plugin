@@ -7,6 +7,6 @@ import lermitage.intellij.extra.icons.enablers.IconEnabler
 
 @Service(Service.Level.PROJECT)
 class InAngularFolderEnablerService : AbstractInFolderEnabler(), IconEnabler {
-    override fun getFilenamesToSearch() = arrayOf("angular.json")
-    override fun getName() = "Angular icons"
+    override val filenamesToSearch = arrayOf("angular.json")
+    override val name = "Angular icons"
 }

@@ -7,6 +7,6 @@ import lermitage.intellij.extra.icons.enablers.IconEnabler
 
 @Service(Service.Level.PROJECT)
 class HelmFolderEnablerService : AbstractFolderEnabler(), IconEnabler {
-    override fun getFilenamesToSearch() = arrayOf("Chart.yaml", "values.yaml")
-    override fun getName() = "Helm folder icon"
+    override val filenamesToSearch = arrayOf("Chart.yaml", "values.yaml")
+    override val name = "Helm    folder icon"
 }

@@ -17,12 +17,11 @@ import static lermitage.intellij.extra.icons.Model.ofIcon;
 @SuppressWarnings({"SpellCheckingInspection", "HardCodedStringLiteral"})
 public class ExtraIconProvider extends BaseIconProvider implements DumbAware {
 
-    private static final String[] TXT = new String[]{".md", ".txt", ".adoc", ".rst"};
-    private static final String[] CFG = new String[]{".xml", ".yml", ".yaml", ".properties", ".json", ".cfg", ".conf", ".ini", ".txt"};
-    private static final String[] YML = new String[]{".yaml", ".yml"};
+    private static final String[] TXT = {".md", ".txt", ".adoc", ".rst"};
+    private static final String[] CFG = {".xml", ".yml", ".yaml", ".properties", ".json", ".cfg", ".conf", ".ini", ".txt"};
+    private static final String[] YML = {".yaml", ".yml"};
 
-    @NotNull
-    public static List<Model> allModels() { // TODO move to SequencedCollection once migrated to jdk21?
+    public static @NotNull List<Model> allModels() { // TODO move to SequencedCollection once migrated to jdk21?
         return Stream.of(
 
                 //<editor-fold desc="IDE icon (lowest priority)">

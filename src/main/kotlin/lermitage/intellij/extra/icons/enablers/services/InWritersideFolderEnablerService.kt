@@ -7,6 +7,6 @@ import lermitage.intellij.extra.icons.enablers.IconEnabler
 
 @Service(Service.Level.PROJECT)
 class InWritersideFolderEnablerService : AbstractInFolderEnabler(), IconEnabler {
-    override fun getFilenamesToSearch() = arrayOf("writerside.cfg")
-    override fun getName() = "Writerside icons"
+    override val filenamesToSearch = arrayOf("writerside.cfg")
+    override val name = "Writerside icons"
 }

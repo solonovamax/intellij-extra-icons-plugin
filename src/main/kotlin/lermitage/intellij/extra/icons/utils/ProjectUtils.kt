@@ -3,6 +3,7 @@
 
 package lermitage.intellij.extra.icons.utils
 
+import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.fileLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -22,7 +23,7 @@ fun Project?.isProjectAlive(): Boolean {
         return true
     } else {
         if (this == null)
-            LOGGER.debug("Project is null")
+            LOGGER.debug { "Project is null" }
         else
             LOGGER.warn("Project '$name' is not alive - Project is disposed: $isDisposed")
 

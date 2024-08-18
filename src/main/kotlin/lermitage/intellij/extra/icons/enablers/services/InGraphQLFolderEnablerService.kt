@@ -7,7 +7,7 @@ import lermitage.intellij.extra.icons.enablers.IconEnabler
 
 @Service(Service.Level.PROJECT)
 class InGraphQLFolderEnablerService : AbstractInFolderEnabler(), IconEnabler {
-    override fun getFilenamesToSearch() = arrayOf("schema.graphql", "schema.gql", "codegen.yml", ".graphqlconfig", "schema.graphql.json")
-    override fun getName() = "GraphQL icons"
-    override fun getRequiredSearchedFiles() = false
+    override val filenamesToSearch = arrayOf("schema.graphql", "schema.gql", "codegen.yml", ".graphqlconfig", "schema.graphql.json")
+    override val name = "GraphQL icons"
+    override val requiredSearchedFiles = false
 }
